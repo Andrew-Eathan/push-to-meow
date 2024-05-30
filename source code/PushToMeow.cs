@@ -53,9 +53,16 @@ namespace PushToMeowMod
 			MeowedShort
 		}
 
+		// this stores the last checked state of the meow button for a given player
 		private Dictionary<int, bool> _lastPressState = new Dictionary<int, bool>();
+
+		// this stores the state of the meow being played, this gets reset once the button is let go
 		private Dictionary<int, MeowState> _lastPressMeowState = new Dictionary<int, MeowState>();
+
+		// this stores the last time the meow button was pressed per player, used for cooldowns
 		private Dictionary<int, float> _lastPressTime = new Dictionary<int, float>();
+
+		// stores a quick lookup table for players used to access the player entity to handle meow button release
 		private Dictionary<int, Player> _lastPressPlayerLookup = new Dictionary<int, Player>();
 
 		private void OnEnable()
@@ -163,7 +170,7 @@ namespace PushToMeowMod
 
 			if (self.graphicsModule is PlayerGraphics gm)
 			{
-				// looks up after 170 ms, small delay
+				// looks up after 33 ms, small delay
 				Timer lookUpTimer = 
 					new Timer(33) { AutoReset = false, Enabled = true };
 				lookUpTimer.Elapsed += (object _, ElapsedEventArgs e) =>
@@ -238,8 +245,22 @@ namespace PushToMeowMod
 			if (isGrabbedByNonPlayer)
 				pitch += 0.2f + UnityEngine.Random.value * 0.15f;
 
+			if (self.submerged)
+				pitch -= 0.05f + Random.value * 0.1f;
+
+			// play meow sound
 			self.room.PlaySound(meowType, self.bodyChunks[0], false, 0.7f, pitch);
+
+			// alert all creatures around slugcat
 			self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
+
+			// drain slugcat's lungs a little
+			self.airInLungs -= 0.08f + (shortMeow ? 0 : 0.08f);
+
+			// make little bubbles if submerged
+			if (self.submerged)
+                for (int i = 0; i < 2 + (shortMeow ? 0 : 1); i++) 
+					self.room.AddObject(new Bubble(self.firstChunk.pos, self.firstChunk.vel, false, false));
 
 			Logger.LogInfo("play meow " + (shortMeow ? "short" : "long") + " pitch " + pitch + " ply " + self + " type " + meowType);
 		}
