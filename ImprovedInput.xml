@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImprovedInput</name>
+    </assembly>
+    <members>
+        <member name="T:ImprovedInput.CustomInput">
+            <summary>
+            One tick of input for a given player.
+            </summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.GetRawInput(System.Int32)">
+            <summary>Gets all modded input for the given <paramref name="playerNumber"/> at this time.</summary>
+        </member>
+        <member name="P:ImprovedInput.CustomInput.AnyPressed">
+            <summary>
+            Gets if any key is pressed.
+            </summary>
+        </member>
+        <member name="P:ImprovedInput.CustomInput.Item(ImprovedInput.PlayerKeybind)">
+            <summary>
+            Gets or sets whether <paramref name="key"/> is active.
+            </summary>
+            <returns>True if the key is active.</returns>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.Apply(System.Func{ImprovedInput.PlayerKeybind,System.Boolean})">
+            <summary>
+            Gets or sets whether any key is active by applying the <paramref name="apply"/> function to all of them.
+            </summary>
+            <remarks>This is primarily useful if you want to conditionally enable or disable all inputs, like in vanilla when the player is using their map.</remarks>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.Clone">
+            <summary>Deeply copies <see langword="this"/>.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.Equals(ImprovedInput.CustomInput)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.op_Equality(ImprovedInput.CustomInput,ImprovedInput.CustomInput)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ImprovedInput.CustomInput.op_Inequality(ImprovedInput.CustomInput,ImprovedInput.CustomInput)">
+            <inheritdoc/>
+        </member>
+        <member name="T:ImprovedInput.CustomInputExt">
+            <summary>
+            Extends the functionality of the vanilla input system.
+            </summary>
+        </member>
+        <member name="P:ImprovedInput.CustomInputExt.HistoryLength">
+            <summary>
+            Determines how many ticks of input are stored for <see cref="M:ImprovedInput.CustomInputExt.InputHistory(Player)"/> and <see cref="M:ImprovedInput.CustomInputExt.RawInputHistory(Player)"/>.
+            </summary>
+            <remarks>This value starts at 10 and can only be increased. Set it when your mod is being enabled. Avoid setting this to anything extremely high.</remarks>
+        </member>
+        <member name="P:ImprovedInput.CustomInputExt.MaxPlayers">
+            <summary>
+            The number of players who could possibly be receiving input at the moment.
+            </summary>
+            <remarks>This value starts at 10 and can only be increased. Set it when your mod is being enabled. Avoid setting this to anything extremely high.</remarks>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.UsingKeyboard(Options.ControlSetup)">
+            <summary>Returns true if a given control setup uses a keyboard.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.UsingGamepad(Options.ControlSetup)">
+            <summary>Returns true if a given control setup uses a gamepad.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.UsingKeyboard(System.Int32)">
+            <summary>Returns true if a given player is using a keyboard.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.UsingGamepad(System.Int32)">
+            <summary>Returns true if a given player is using a gamepad.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.IsKeyBound(Player,ImprovedInput.PlayerKeybind)">
+            <summary>
+            Checks if <paramref name="key"/> is bound for <paramref name="player"/>.
+            </summary>
+            <returns>True if the key is bound.</returns>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.IsKeyUnbound(Player,ImprovedInput.PlayerKeybind)">
+            <summary>
+            Checks if <paramref name="key"/> is unbound for <paramref name="player"/>.
+            </summary>
+            <returns>True if the key is unbound.</returns>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.IsPressed(Player,ImprovedInput.PlayerKeybind)">
+            <summary>
+            Checks if <paramref name="key"/> is being pressed by <paramref name="player"/>.
+            </summary>
+            <returns>True if the key is down.</returns>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.JustPressed(Player,ImprovedInput.PlayerKeybind)">
+            <summary>
+            Checks if <paramref name="key"/> is just now being pressed by <paramref name="player"/>.
+            </summary>
+            <returns>True if the key is down, but was not down last tick.</returns>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.Input(Player)">
+            <summary>Gets all custom input for <paramref name="player"/> this tick.</summary>
+            <remarks>Ignores keypresses made while unconscious, using the map, or being controlled. To use those keypresses, see <see cref="M:ImprovedInput.CustomInputExt.RawInput(Player)"/>.</remarks>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.RawInput(Player)">
+            <summary>Gets all custom input for <paramref name="player"/> this tick, including suppressed inputs. Avoid modifying anything here.</summary>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.InputHistory(Player)">
+            <summary>Gets all custom input for <paramref name="player"/> in recent history.</summary>
+            <remarks>Ignores keypresses made while unconscious, using the map, or being controlled. To use those keypresses, see <see cref="M:ImprovedInput.CustomInputExt.RawInputHistory(Player)"/>.</remarks>
+        </member>
+        <member name="M:ImprovedInput.CustomInputExt.RawInputHistory(Player)">
+            <summary>Gets all custom input for <paramref name="player"/> in recent history, including suppressed inputs. Avoid modifying anything here.</summary>
+        </member>
+        <member name="T:ImprovedInput.PlayerKeybind">
+            <summary>
+            A simple per-player keybind.
+            </summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Keybinds">
+            <summary>Every keybind currently registered, including vanilla and modded keybinds.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Pause">
+            <summary>The PAUSE button. Usually ignored for anyone but the first player.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Map">
+            <summary>The MAP button.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Grab">
+            <summary>The GRAB button.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Jump">
+            <summary>The JUMP button.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Throw">
+            <summary>The THROW button.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Up">
+            <summary>The UP button. Ignored for controllers.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Left">
+            <summary>The UP button. Ignored for controllers.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Down">
+            <summary>The UP button. Ignored for controllers.</summary>
+        </member>
+        <member name="F:ImprovedInput.PlayerKeybind.Right">
+            <summary>The UP button. Ignored for controllers.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Register(System.String,System.String,System.String,UnityEngine.KeyCode,UnityEngine.KeyCode)">
+            <summary>
+            Registers a new keybind.
+            </summary>
+            <param name="id">The unique ID for the keybind.</param>
+            <param name="mod">The display name of the mod that registered this keybind.</param>
+            <param name="name">A short name to show in the Input Settings screen.</param>
+            <param name="keyboardPreset">The default value for keyboards.</param>
+            <param name="gamepadPreset">The default value for controllers.</param>
+            <returns>A new <see cref="T:ImprovedInput.PlayerKeybind"/> to be used like <c>player.JustPressed(keybind)</c>.</returns>
+            <exception cref="T:System.ArgumentException">The <paramref name="id"/> is invalid or already taken.</exception>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Register(System.String,System.String,System.String,UnityEngine.KeyCode,UnityEngine.KeyCode,UnityEngine.KeyCode)">
+            <summary>
+            Registers a new keybind.
+            </summary>
+            <param name="id">The unique ID for the keybind.</param>
+            <param name="mod">The display name of the mod that registered this keybind.</param>
+            <param name="name">A short name to show in the Input Settings screen.</param>
+            <param name="keyboardPreset">The default value for keyboards.</param>
+            <param name="gamepadPreset">The default value for PlayStation, Switch Pro, and other controllers.</param>
+            <param name="xboxPreset">The default value for Xbox controllers.</param>
+            <returns>A new <see cref="T:ImprovedInput.PlayerKeybind"/> to be used like <c>player.JustPressed(keybind)</c>.</returns>
+            <exception cref="T:System.ArgumentException">The <paramref name="id"/> is invalid or already taken.</exception>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Get(System.String)">
+            <summary>
+            Gets a keybind given its <paramref name="id"/>.
+            </summary>
+            <returns>The keybind, or <see langword="null"/> if none was found.</returns>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.Id">
+            <summary>A unique ID.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.Mod">
+            <summary>The display name of the mod that registered this keybind.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.Name">
+            <summary>The display name of the keybind.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.KeyboardPreset">
+            <summary>The default value for keyboards.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.GamepadPreset">
+            <summary>The default value for PlayStation, Switch Pro, and other controllers.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.XboxPreset">
+            <summary>The default value for Xbox controllers.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.Description">
+            <summary>A longer description to show at the bottom of the screen when configuring the keybind.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.MapSuppressed">
+            <summary>If true, using the map suppresses the keybind.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.SleepSuppressed">
+            <summary>If true, sleeping suppresses the keybind.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.HideConfig">
+            <summary>If true, the keybind will not be configurable through the Input Settings screen.</summary>
+        </member>
+        <member name="P:ImprovedInput.PlayerKeybind.HideConflict">
+            <summary>If true, the conflict warning will be hidden when this key conflicts with the given key.</summary>
+            <remarks>May be null.</remarks>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Bound(System.Int32)">
+            <summary>True if the binding for <paramref name="playerNumber"/> is set.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Unbound(System.Int32)">
+            <summary>True if the binding for <paramref name="playerNumber"/> is not set.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Keyboard(System.Int32)">
+            <summary>The current keycode configured for the given <paramref name="playerNumber"/> on keyboard.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.Gamepad(System.Int32)">
+            <summary>The current keycode configured for the given <paramref name="playerNumber"/> on a controller.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.CurrentBinding(System.Int32)">
+            <summary>The current recognized keycode for the given <paramref name="playerNumber"/>.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.ConflictsWith(System.Int32,ImprovedInput.PlayerKeybind,System.Int32)">
+            <summary>
+            Checks if <see langword="this"/> for <paramref name="playerNumber"/> conflicts with <paramref name="other"/> for <paramref name="otherPlayerNumber"/>. This ignores <see cref="P:ImprovedInput.PlayerKeybind.HideConflict"/>.
+            </summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.CheckRawPressed(System.Int32)">
+            <summary>Checks if the key is currently being pressed by <paramref name="playerNumber"/>.</summary>
+        </member>
+        <member name="M:ImprovedInput.PlayerKeybind.ToString">
+            <summary>
+            Returns <see cref="P:ImprovedInput.PlayerKeybind.Id"/>.
+            </summary>
+        </member>
+    </members>
+</doc>
