@@ -1,0 +1,13 @@
+{
+	"id": "pushtomeow",
+	"name": "Push To Meow",
+	"version": "1.69",
+	"hide_version": true,
+	"authors": "mod idea & programmer: andreweathan // meow sound design, thumbnail & trailer: cioss",
+	"youtube_trailer_id": "r96vvPS-q_4",
+	"description": "slug cat go meow meow :3\nmeow button can be rebound in settings but its M by default\nyou can also select alternate sound for rivulet here (there's two versions)",
+	"requirements": [ "improved-input-config" ],
+	"requirements_names": [ "Improved Input Config" ],
+	"tags": [ "meow meow", "meow", "Cosmetics", "Game Mechanics" ]
+	"checksum_override_version": false
+}
