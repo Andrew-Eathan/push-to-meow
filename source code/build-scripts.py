@@ -8,7 +8,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 TARGET_ASSEMBLY = 'PushToMeowMod.dll'
 BIN_PATH = 'bin/Debug/net48/'
-PLUGINS_PATH = 'RainWorld_Data/StreamingAssets/mods/pushtomeow/plugins/'
+MODS_PATH = 'RainWorld_Data/StreamingAssets/mods/'
+MOD_NAME = 'pushtomeow'
+MOD_PACKAGE_FOLDER = os.path.abspath('../mod files/')
 
 # Paths to search for Rain World installs
 DRIVES = [
@@ -74,11 +76,20 @@ def install():
         return
 
     if install_path is not None:
+        # Copy DLL from output to mod package path
         src = os.path.join(BIN_PATH, TARGET_ASSEMBLY)
-        dest = os.path.join(install_path, PLUGINS_PATH, TARGET_ASSEMBLY)
+        dest = os.path.join(MOD_PACKAGE_FOLDER, 'plugins', TARGET_ASSEMBLY)
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
         print('Copying:', src, '->', dest)
-        os.makedirs(os.path.dirname(dest))
         shutil.copyfile(src, dest)
+
+        # Copy mod package folder to Rain World plugins
+        src = MOD_PACKAGE_FOLDER
+        dest = os.path.join(install_path, MODS_PATH, MOD_NAME)
+        os.makedirs(dest, exist_ok=True)
+        print('Copying:', src, '->', dest)
+        shutil.copytree(src, dest, dirs_exist_ok=True)
+
         print('Installed assembly in Rain World plugins.')
 
 
