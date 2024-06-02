@@ -1,0 +1,9 @@
+# Don't distribute any game DLLs or things from here
+*.dll
+*.pdb
+*.exe
+*.xml
+
+# ...except for this, this should be fine
+!ImprovedInput.dll
+!ImprovedInput.xml
