@@ -1,9 +1,4 @@
 ﻿using BepInEx.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -69,16 +64,18 @@ namespace PushToMeowMod
 			"Meow.",
 			"Meow!",
 			"Meow."
-        };
+		};
 
-        // this is set to true when you meow after SS asks you "is this reaching you"
-        public static bool MeowFlagSSReaching = false;
+		// this is set to true when you meow after SS asks you "is this reaching you"
+		public static bool MeowFlagSSReaching = false;
 
 		// once counter reaches 5 this stage increments, counter is reset and an event happens
 		// stage 0 -> 1: SS says MeowALotDuringHisDialogue1
 		// stage 1 -> 2: SS says MeowALotDuringHisDialogue2
 		// stage 2 -> 3: SS says MeowALotDuringHisDialogue3 and throws you out
 		public static int MeowSSAngerStage = 0;
+		public static int MeowSSAngerStage1 = 0;
+		public static float MeowSSLastTimeBothered = 0; // SS only increments bother count 1.3 sec after last time
 
 		// everytime this is incremented during a conversation a "..." interruption happens
 		public static int MeowSSCounter = 0; // pebble
@@ -87,8 +84,11 @@ namespace PushToMeowMod
 		public static int MeowSLCounter = 0; // moon
 		public static int MeowSLCanRespondCounter = 0;
 
-		public static void HandleThisOraclesReaction(Player self, Oracle oracle, ManualLogSource Logger)
+		public static void HandleThisOraclesReaction(Player self, Oracle oracle)
 		{
+			if (oracle == null || oracle.oracleBehavior == null) return;
+            ManualLogSource Logger = PushToMeowMain.PLogger;
+
 			if (oracle.oracleBehavior is SLOracleBehaviorHasMark) // looks to the moon with mark
 			{
 				var sl = oracle.oracleBehavior as SLOracleBehaviorHasMark;
@@ -101,7 +101,7 @@ namespace PushToMeowMod
 
 				if (opinion == SLOrcacleState.PlayerOpinion.NotSpeaking)
 				{
-					if (Random.value < 0.1)
+					if (Random.value < 0.06)
 					{
 						sl.dialogBox.Interrupt("...", 0);
 					}
@@ -112,7 +112,7 @@ namespace PushToMeowMod
 				var neutral = SLOrcacleState.PlayerOpinion.Neutral;
 				var dislikes = SLOrcacleState.PlayerOpinion.Dislikes;
 
-				Logger.LogInfo(oracle + " is sl mark, dist: " + dist + ", slcounter: " + MeowSLCounter);
+				Logger?.LogInfo(oracle + " is sl mark, dist: " + dist + ", slcounter: " + MeowSLCounter);
 
 				if (dist > 25) return; // ignore meow if slugcat is too far
 
@@ -163,7 +163,7 @@ namespace PushToMeowMod
 			}
 			else if (oracle.oracleBehavior is SLOracleBehaviorNoMark) // looks to the moon without mark
 			{
-				Logger.LogInfo(oracle + " is sl no mark");
+				Logger?.LogInfo(oracle + " is sl no mark");
 
 				Timer doSoundTimer =
 					new Timer(300 + UnityEngine.Random.value * 400) { AutoReset = false, Enabled = true };
@@ -181,21 +181,20 @@ namespace PushToMeowMod
 						case 4: sl.AirVoice(SoundID.SL_AI_Talk_5); break;
 					}
 
-					Logger.LogInfo("played SL markless reaction :D");
+					Logger?.LogInfo("played SL markless reaction :D");
 				};
 			}
 			else if (oracle.oracleBehavior is SSOracleBehavior) // five pebbles
 			{
 				var ss = oracle.oracleBehavior as SSOracleBehavior;
 
-				Logger.LogInfo("CONVO " + ss.conversation);
+				Logger?.LogInfo("CONVO " + ss.conversation);
 
 				if (ss.conversation != null)
 				{
 					if (ss.conversation.events.Count > 0 && ss.conversation.events[0] is Conversation.TextEvent)
 					{
 						var textEvent = ss.conversation.events [0] as Conversation.TextEvent;
-						Logger.LogInfo("Guh " + textEvent + " " + textEvent.text);
 
 						if (!MeowFlagSSReaching && textEvent.text == ss.conversation.Translate("...is this reaching you?"))
 						{
@@ -205,16 +204,24 @@ namespace PushToMeowMod
 							return;
 						}
 
+						// ignore spam meows to help with multiplayer
+						if (Time.time - MeowSSLastTimeBothered < 1.3)
+						{
+							Logger?.LogInfo("Ignoring oracle meow spam");
+							return;
+						}
+
 						ss.conversation.paused = true;
 						ss.restartConversationAfterCurrentDialoge = true;
 
-						if (Random.Range(0, 12) < 2)
+						if (Random.Range(0, 24) < 2)
 							ss.conversation.Interrupt("...", 0);
 
 						MeowSSCounter++;
+						MeowSSLastTimeBothered = Time.time;
 
-						Logger.LogInfo(MeowSSCounter + " meow counter");
-						Logger.LogInfo(MeowSSAngerStage + " anger stage");
+						Logger?.LogInfo(MeowSSCounter + " meow counter");
+						Logger?.LogInfo(MeowSSAngerStage + " anger stage");
 
 						if (MeowSSCounter == 5)
 						{
@@ -225,15 +232,20 @@ namespace PushToMeowMod
 							{
 								case 1: ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue1), 0); break;
 								case 2: ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue2), 0); break;
-								case 3: 
-									ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue3), 0);
-									ss.conversation.Destroy();
-									ss.conversation = null;
-									ss.NewAction(SSOracleBehavior.Action.ThrowOut_ThrowOut);
+								case 3:
+								ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue3), 0);
+								ss.conversation.Destroy();
+								ss.conversation = null;
+								ss.NewAction(SSOracleBehavior.Action.ThrowOut_ThrowOut);
 
-									MeowSSAngerStage = 0;
+								MeowSSAngerStage = 0;
 								break;
 							}
+						}
+						else
+						{
+							ss.conversation.paused = false;
+							ss.restartConversationAfterCurrentDialoge = true;
 						}
 					}
 				}
@@ -251,13 +263,13 @@ namespace PushToMeowMod
 					if (MeowSSCounter == 5)
 					{
 						MeowSSCounter = 0;
-						MeowSSAngerStage++;
-					}
+						MeowSSAngerStage1++;
 
-					switch (MeowSSAngerStage)
-					{
-						case 1: ss.dialogBox.Interrupt(SSMeowReaction1, 0); break;
-						case 2: ss.dialogBox.Interrupt(SSMeowReaction2, 0); break;
+						switch (MeowSSAngerStage1)
+						{
+							case 1: ss.dialogBox.Interrupt(SSMeowReaction1, 0); break;
+							case 2: ss.dialogBox.Interrupt(SSMeowReaction2, 0); break;
+						}
 					}
 				}
 			}

@@ -1,0 +1,54 @@
+{
+	"priority": -1,
+	"custom_meows": [
+		{
+			"slugcat_id": "Gourmand",
+			"short_meow_soundid": "SlugcatMeowFatShort",
+			"long_meow_soundid": "SlugcatMeowFat",
+			"volume_multiplier": 1.15
+		},
+		{
+			"slugcat_id": "Saint",
+			"short_meow_soundid": "SlugcatMeowNormalShort",
+			"long_meow_soundid": "SlugcatMeowNormal"
+		},
+		{
+			"slugcat_id": "Inv",
+			"short_meow_soundid": "SlugcatMeowSofanthielShort",
+			"long_meow_soundid": "SlugcatMeowSofanthiel"
+		},
+		{
+			"slugcat_id": "Artificer",
+			"short_meow_soundid": "SlugcatMeowCoarseShort",
+			"long_meow_soundid": "SlugcatMeowCoarse",
+			"volume_multiplier": 1.2
+		},
+		{
+			"slugcat_id": "Spear",
+			"short_meow_soundid": "SlugcatMeowSpearShort",
+			"long_meow_soundid": "SlugcatMeowSpear",
+			"volume_multiplier": 0.55
+		},
+		{
+			"slugcat_id": "White",
+			"short_meow_soundid": "SlugcatMeowNormalShort",
+			"long_meow_soundid": "SlugcatMeowNormal",
+			"short_meow_pup_soundid": "SlugcatMeowPupShort",
+			"long_meow_pup_soundid": "SlugcatMeowPup"
+		},
+		{
+			"slugcat_id": "Yellow",
+			"short_meow_soundid": "SlugcatMeowNormalShort",
+			"long_meow_soundid": "SlugcatMeowNormal",
+			"short_meow_pup_soundid": "SlugcatMeowPupShort",
+			"long_meow_pup_soundid": "SlugcatMeowPup"
+		},
+		{
+			"slugcat_id": "Red",
+			"short_meow_soundid": "SlugcatMeowNormalShort",
+			"long_meow_soundid": "SlugcatMeowNormal",
+			"short_meow_pup_soundid": "SlugcatMeowPupShort",
+			"long_meow_pup_soundid": "SlugcatMeowPup"
+		}
+	]
+}
