@@ -113,6 +113,7 @@ namespace PushToMeowMod
 			list3.Add(Custom.RootFolderDirectory());
 			foreach (string item in list3)
 			{
+				PushToMeowMain.PLogger.LogInfo("ABABSAB " + item + " O " + path.ToLowerInvariant());
 				string path2 = Path.Combine(item, path.ToLowerInvariant());
 				if (!Directory.Exists(path2))
 				{
@@ -345,5 +346,12 @@ namespace PushToMeowMod
 				Debug.LogException(e);
 			}
 		}
-	}
+
+		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
+
+        public static void HandleNPCSlugcat(Player self)
+        {
+            // TBD
+        }
+    }
 }

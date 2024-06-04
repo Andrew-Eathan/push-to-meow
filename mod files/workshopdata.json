@@ -2,7 +2,7 @@
   "Title": "Push To Meow",
   "Description": "scream at your friends with this awesome new mod :3\r\n\r\nhold M long enough to do a long meow, or tap M quickly to do a short meow\r\n\r\nthis mod allows you to meow by the simple press of a button, featuring::::::::colon\r\n- different meowing sounds for rivulet, gourmand, and artificer\r\n- rebindable meow button thru control settings\r\n- custom iterator messages to you meowing\r\n- meowing alerts other creatures\r\n\r\nwhat are you doing still reading the description??? Go Subscribe Now Subscribe Subscribe SubscribeSubscribeSubscribeSubscribeSubscribeSubscribeSubscribeSubscri\r\n\r\ncredtis;\r\nmeow sounds, thumbnail and trailer video by cioss\r\nmod entirely programmed by me\r\n\r\nanyway heres the source code for those who wanna check it out:\r\nhttps://github.com/Andrew-Eathan/push-to-meow",
   "ID": "pushtomeow",
-  "Version": "1.69",
+  "Version": "1.1",
   "TargetGameVersion": "",
   "Requirements": "improved-input-config",
   "RequirementNames": "Improved Input Config",

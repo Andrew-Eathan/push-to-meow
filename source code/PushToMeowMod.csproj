@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>G:\Program Files %28x86%29\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\3257541402\plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,10 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>G:\Program Files %28x86%29\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\pushtomeow\plugins\</OutputPath>
+    <OutputPath>G:\Program Files %28x86%29\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\3257541402\plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
@@ -84,6 +85,7 @@
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
       <HintPath>G:\Program Files (x86)\Steam\steamapps\common\Rain World\RainWorld_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

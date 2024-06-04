@@ -49,31 +49,29 @@ namespace PushToMeowMod
 			MeowUtils.InitialiseSoundIDs(Logger);
 
 			// for good measure during hot reload
-			On.RainWorldGame.RestartGame -= ResetPTMStateValues;
-			On.Player.Update -= HandleMeowInput;
-
             On.RainWorldGame.RestartGame += ResetPTMStateValues;
 			On.Player.Update += HandleMeowInput;
+            On.RainWorld.OnModsInit += RainWorld_OnModsInit;
 
-			ModSettings = new MeowMeowOptions(this);
-			MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
+            if (Meow == null)
+                Meow = PlayerKeybind.Get("pushtomeow:meow");
+
+            if (Meow == null)
+                Meow = PlayerKeybind.Register("pushtomeow:meow", "Push to Meow", "Meow", KeyCode.M, KeyCode.JoystickButton3);
+
+            Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
+        }
+
+        private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
+        {
+			orig(self);
+
+            ModSettings = new MeowMeowOptions(this);
+            MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
 			Logger.LogInfo("Registered OI");
 
 			MeowUtils.LoadCustomMeows();
-			Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
-
-			if (Meow == null)
-				Meow = PlayerKeybind.Get("pushtomeow:meow");
-
-			if (Meow == null)
-				Meow = PlayerKeybind.Register("pushtomeow:meow", "Push to Meow", "Meow", KeyCode.M, KeyCode.JoystickButton3);
-		}
-
-		private void OnDisable()
-		{
-			On.RainWorldGame.RestartGame -= ResetPTMStateValues;
-			On.Player.Update -= HandleMeowInput;
-		}
+        }
 
 		// to reset all state values of Push to Meow
 		private void ResetPTMStateValues(On.RainWorldGame.orig_RestartGame orig, RainWorldGame self)
@@ -97,8 +95,8 @@ namespace PushToMeowMod
 				bool meowButtonState = kv.Value;
 				float timeSinceMeowPress = Time.time - PlayersLastMeowTime[playerIdx];
 
-				// if meow button is still pressed after time is over, then do a long meow 
-				if (
+                // if meow button is still pressed after time is over, then do a long meow 
+                if (
 					meowButtonState 
 					&& timeSinceMeowPress > LongMeowTime 
 					&& PlayersMeowingState[playerIdx] == MeowState.NotMeowed
@@ -161,6 +159,12 @@ namespace PushToMeowMod
 		{
 			orig(self, wtfIsThisBool);
 
+			if (self.isNPC)
+			{
+				MeowUtils.HandleNPCSlugcat(self);
+				return;
+			}
+
 			try
 			{
 				int plyNumber = self.playerState.playerNumber;
@@ -185,6 +189,8 @@ namespace PushToMeowMod
                     PlayersMeowButtonLastState[plyNumber] = true;
 					PlayersMeowingState[plyNumber] = MeowState.NotMeowed;
 					PlayersLastMeowTime[plyNumber] = Time.time; // to check later
+
+					Debug.Log("btnpress " + plyNumber + " " + PlayersMeowButtonLastState.Count);
 				}
 				// button unpress
 				else if (!plyPressingMeow && PlayersMeowButtonLastState[plyNumber])
@@ -194,10 +200,12 @@ namespace PushToMeowMod
 					{
 						DoMeow(self, true);
 						PlayersMeowingState[plyNumber] = MeowState.MeowedShort;
-					}
+						Debug.Log("did short meow");
+                    }
 
-					PlayersMeowButtonLastState[plyNumber] = false;
-				}
+                    PlayersMeowButtonLastState[plyNumber] = false;
+					Debug.Log("btnrel " + plyNumber + " " + PlayersMeowButtonLastState.Count);
+                }
             }
             catch (Exception e)
 			{
