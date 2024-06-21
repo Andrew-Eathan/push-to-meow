@@ -11,7 +11,7 @@ namespace PushToMeowMod
 		{
 			"...",
 			"Are you taunting me?",
-			"...What is it? Oh, forget it, i don't care..."
+			"...What is it? Oh, forget it, I don't care..."
 		};
 
 		// goofy
@@ -30,7 +30,7 @@ namespace PushToMeowMod
 		public static readonly string[] _meowInterruptionsSLLikes =
 		{
 			"What are you trying to say, <PlayerName>?",
-			"I wish i could understand you, <PlayerName>...",
+			"I wish I could understand you, <PlayerName>...",
 			"Hm...?",
 			"Oh, what do you want, <PlayerName>?",
 			"I apologise, <PlayerName>... I don't understand you.",
