@@ -86,6 +86,7 @@ namespace PushToMeowMod
 
 		public static void HandleThisOraclesReaction(Player self, Oracle oracle)
 		{
+			if (!PushToMeowMain.ModSettings.DoOraclesReact.Value) return;
 			if (oracle == null || oracle.oracleBehavior == null) return;
             ManualLogSource Logger = PushToMeowMain.PLogger;
 

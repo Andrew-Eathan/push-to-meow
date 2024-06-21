@@ -113,7 +113,6 @@ namespace PushToMeowMod
 			list3.Add(Custom.RootFolderDirectory());
 			foreach (string item in list3)
 			{
-				PushToMeowMain.PLogger.LogInfo("ABABSAB " + item + " O " + path.ToLowerInvariant());
 				string path2 = Path.Combine(item, path.ToLowerInvariant());
 				if (!Directory.Exists(path2))
 				{
@@ -185,49 +184,46 @@ namespace PushToMeowMod
 			float volume = PushToMeowMain.ModSettings.MeowVolumeMultiplier.Value;
 			string slugcatID = self.SlugCatClass.value;
 
-			// i'd use switch directly on SlugCatClass with slugcat name extenums but i cant bc it wants constant cases
-			switch (slugcatID) 
+			// if something adds a custom meow sound for rivulet, ignore the default one
+			if (slugcatID == "Rivulet" && !CustomMeows.ContainsKey(slugcatID))
 			{
-				// special case for rivulet, therefore it's not included in PushToMeow's custom_meows.json :(
-				case "Rivulet": {
-					bool altRivuletSounds = PushToMeowMain.ModSettings.AltRivuletSounds.Value;
+                bool altRivuletSounds = PushToMeowMain.ModSettings.AltRivuletSounds.Value;
 
-					var SlugcatMeowRivuletShort = altRivuletSounds ? SlugcatMeowRivuletBShort : SlugcatMeowRivuletAShort;
-					var SlugcatMeowRivulet = altRivuletSounds ? SlugcatMeowRivuletB : SlugcatMeowRivuletA;
-					meowType = isShortMeow ? SlugcatMeowRivuletShort : SlugcatMeowRivulet;
+                var SlugcatMeowRivuletShort = altRivuletSounds ? SlugcatMeowRivuletBShort : SlugcatMeowRivuletAShort;
+                var SlugcatMeowRivulet = altRivuletSounds ? SlugcatMeowRivuletB : SlugcatMeowRivuletA;
+                meowType = isShortMeow ? SlugcatMeowRivuletShort : SlugcatMeowRivulet;
 
-					volume *= 0.8f; // 0.8x volume for rivulet
-				} break;
+                volume *= 0.8f; // 0.8x volume for rivulet
+            }
+			else {
+				// try to find a custom SoundID for this slugcat type
+				if (CustomMeows.ContainsKey(slugcatID))
+				{
+					var meow = CustomMeows[slugcatID];
+					volume *= meow.VolumeMultiplier;
 
-				default: {
-					// try to find a custom SoundID for this slugcat type
-					if (CustomMeows.ContainsKey(slugcatID))
+					if (isPup)
 					{
-						var meow = CustomMeows[slugcatID];
-						volume *= meow.VolumeMultiplier;
+						// pick the pup variants of the meows if possible
+						meowType = isShortMeow
+							? (meow.ShortMeowPupSoundID ?? meow.ShortMeowSoundID)
+							: (meow.LongMeowPupSoundID ?? meow.LongMeowSoundID);
 
-						if (isPup)
-						{
-							// pick the pup variants of the meows if possible
-							meowType = isShortMeow 
-								? (meow.ShortMeowPupSoundID ?? meow.ShortMeowSoundID) 
-								: (meow.LongMeowPupSoundID ?? meow.LongMeowSoundID);
-
-							// set pitch to normal if we've found a custom pup sound, since itll likely be fittingly pitched up anyway
-							if (meowType == meow.ShortMeowPupSoundID || meowType == meow.LongMeowPupSoundID)
-								pitch = 1f;
-						} 
-						else meowType = isShortMeow ? meow.ShortMeowSoundID : meow.LongMeowSoundID;
-
-						break;
+						// set pitch to normal if we've found a custom pup sound, since itll likely be fittingly pitched up anyway
+						if (meowType == meow.ShortMeowPupSoundID || meowType == meow.LongMeowPupSoundID)
+							pitch = 1f;
 					}
-					else Logger.LogDebug("Using normal meow type for " + slugcatID + " because they don't have a custom meow registered");
+					else meowType = isShortMeow ? meow.ShortMeowSoundID : meow.LongMeowSoundID;
+				}
+				else
+				{
+					Logger.LogDebug("Using normal meow type for " + slugcatID + " because they don't have a custom meow registered");
 
 					if (isPup) // pup meow
 						meowType = isShortMeow ? SlugcatMeowPupShort : SlugcatMeowPup;
 					else // normal meow
 						meowType = isShortMeow ? SlugcatMeowNormalShort : SlugcatMeowNormal;
-				} break;
+				}
 			}
 
 			// panic when chomped by something

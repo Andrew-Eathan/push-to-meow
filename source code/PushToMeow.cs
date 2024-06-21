@@ -128,10 +128,18 @@ namespace PushToMeowMod
 			(SoundID meowType, float pitch, float volume) = MeowUtils.FindMeowSoundID(self, isShortMeow);
 
 			// play meow sound
-			self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
+			try
+			{
+				self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
+			}
+			catch (Exception e)
+			{
+				Logger.LogError("Couldn't play meow type " + meowType + " for slugcat ID " + self.SlugCatClass.value + ", possible SoundID issues? Check your custom meow sound mod's modify/soundeffects/sounds.txt, make sure your .wav files have no underscores or other symbols!");
+				Logger.LogError(e);
+			}
 
-			// alert all creatures around slugcat
-			if (ModSettings.AlertCreatures.Value)
+            // alert all creatures around slugcat
+            if (ModSettings.AlertCreatures.Value)
 				self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
 
 			// drain slugcat's lungs a little (unless theyre rivulet)
@@ -190,7 +198,7 @@ namespace PushToMeowMod
 					PlayersMeowingState[plyNumber] = MeowState.NotMeowed;
 					PlayersLastMeowTime[plyNumber] = Time.time; // to check later
 
-					Debug.Log("btnpress " + plyNumber + " " + PlayersMeowButtonLastState.Count);
+					//Debug.Log("btnpress " + plyNumber + " " + PlayersMeowButtonLastState.Count);
 				}
 				// button unpress
 				else if (!plyPressingMeow && PlayersMeowButtonLastState[plyNumber])
@@ -204,7 +212,7 @@ namespace PushToMeowMod
                     }
 
                     PlayersMeowButtonLastState[plyNumber] = false;
-					Debug.Log("btnrel " + plyNumber + " " + PlayersMeowButtonLastState.Count);
+					//Debug.Log("btnrel " + plyNumber + " " + PlayersMeowButtonLastState.Count);
                 }
             }
             catch (Exception e)
@@ -212,8 +220,8 @@ namespace PushToMeowMod
 				Logger.LogError("error when ticking meow update: " + e);
 				Debug.LogException(e);
 			}
-		}
-	}
+        }
+    }
 }
 
 // just dropping this here in hopes of the mod working :)

@@ -14,6 +14,7 @@ namespace PushToMeowMod
 		public readonly Configurable<bool> SpearmasterMeow;
 		public readonly Configurable<bool> DrainLungs;
 		public readonly Configurable<bool> CanPanicMeow;
+		public readonly Configurable<bool> DoOraclesReact; // whether iterators react to meowing
         public readonly Configurable<float> MeowVolumeMultiplier;
 
 		public MeowMeowOptions(PushToMeowMain plugin)
@@ -23,6 +24,7 @@ namespace PushToMeowMod
             SpearmasterMeow = config.Bind("PushToMeow_SpearmasterMeow", true);
             DrainLungs = config.Bind("PushToMeow_DrainLungs", true);
             CanPanicMeow = config.Bind("PushToMeow_CanPanicMeow", true);
+            DoOraclesReact = config.Bind("PushToMeow_DoOraclesReact", true);
 			MeowVolumeMultiplier = config.Bind("PushToMeow_MeowVolumeMultiplier", 0.85f);
 		}
 
@@ -70,8 +72,8 @@ namespace PushToMeowMod
 				tab1Container.container.AddChild(lineSprite);
 			}*/
 
-			OpLabel volLabel = new OpLabel(10, 420 - 10 - 25, "Meow volume: " + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
-			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 420 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
+			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, "Meow volume: " + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
+			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
 			
 			volSlider.OnChange += () =>
 			{
@@ -89,9 +91,11 @@ namespace PushToMeowMod
                 new OpLabel(45, 570 - 90 + 1, "Can Spearmaster meow?", false),
                 new OpCheckBox(DrainLungs, 10, 570 - 120),
                 new OpLabel(45, 570 - 120 + 1, "Does meowing make you drown faster?", false),
-                new OpCheckBox(CanPanicMeow, 10, 570 - 150) {description = "Disabling this might fix some issues that can happen, like being able to meow while you're 100% mega dead"},
+                new OpCheckBox(CanPanicMeow, 10, 570 - 150),
                 new OpLabel(45, 570 - 150 + 1, "Can slugcats panic-meow while being grabbed by lizards?", false),
-				
+                new OpCheckBox(DoOraclesReact, 10, 570 - 180),
+                new OpLabel(45, 570 - 180 + 1, "Do iterators (Pebbles/Moon) react when you meow?", false),
+
                 volSlider,
                 volLabel
 			};
