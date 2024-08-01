@@ -31,7 +31,7 @@ namespace PushToMeowMod
 		public override void Initialize()
 		{
 			OpTab meowTab = new OpTab(this, "Push to Meow :3");
-			OpTab customMeowTab = new OpTab(this, "Custom Meows");
+			OpTab customMeowTab = new OpTab(this, Translator.Translate("Custom Meows"));
 			Tabs = new OpTab[] { meowTab, customMeowTab };
 
 			OpContainer tab1Container = new OpContainer(new Vector2(0, 0));
@@ -72,29 +72,29 @@ namespace PushToMeowMod
 				tab1Container.container.AddChild(lineSprite);
 			}*/
 
-			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, "Meow volume: " + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
+			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
 			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
 			
 			volSlider.OnChange += () =>
 			{
-				volLabel.text = "Meow volume: " + Mathf.Round(float.Parse(volSlider.value) * 100) + "%";
+				volLabel.text = Translator.Translate("Meow Volume: ") + Mathf.Round(float.Parse(volSlider.value) * 100) + "%";
 			};
 
 			UIelement[] opts = new UIelement[]
 			{
-				new OpLabel(new Vector2(10, 600 - 30), new Vector2(200, 30), "Push to Meow settings :3 (check out tabs for custom meows)", FLabelAlignment.Left, true) { verticalAlignment = OpLabel.LabelVAlignment.Top },
+				new OpLabel(new Vector2(10, 600 - 30), new Vector2(200, 30), Translator.Translate("Push to Meow settings :3 (check out tabs for custom meows)"), FLabelAlignment.Left, true) { verticalAlignment = OpLabel.LabelVAlignment.Top },
 				new OpCheckBox(AltRivuletSounds, 10, 570 - 30),
-				new OpLabel(45, 570 - 30 + 1, "Use alternate sounds for Rivulet (disabled = sopping wet rat, enabled = high-pitch-y sound)", false),
+				new OpLabel(45, 570 - 30 + 1, Translator.Translate("Use alternate sounds for Rivulet (disabled = sopping wet rat, enabled = high-pitch-y sound)"), false),
 				new OpCheckBox(AlertCreatures, 10, 570 - 60),
-				new OpLabel(45, 570 - 60 + 1, "Can meowing alert other creatures?", false),
+				new OpLabel(45, 570 - 60 + 1, Translator.Translate("Can meowing alert other creatures?"), false),
 				new OpCheckBox(SpearmasterMeow, 10, 570 - 90),
-				new OpLabel(45, 570 - 90 + 1, "Can Spearmaster meow?", false),
+				new OpLabel(45, 570 - 90 + 1, Translator.Translate("Can Spearmaster meow?"), false),
 				new OpCheckBox(DrainLungs, 10, 570 - 120),
-				new OpLabel(45, 570 - 120 + 1, "Does meowing make you drown faster?", false),
+				new OpLabel(45, 570 - 120 + 1, Translator.Translate("Does meowing make you drown faster?"), false),
 				new OpCheckBox(CanPanicMeow, 10, 570 - 150),
-				new OpLabel(45, 570 - 150 + 1, "Can slugcats panic-meow while being grabbed by lizards?", false),
+				new OpLabel(45, 570 - 150 + 1, Translator.Translate("Can slugcats panic-meow while being grabbed by lizards?"), false),
 				new OpCheckBox(DoOraclesReact, 10, 570 - 180),
-				new OpLabel(45, 570 - 180 + 1, "Do iterators (Pebbles/Moon) react when you meow?", false),
+				new OpLabel(45, 570 - 180 + 1, Translator.Translate("Do iterators (Pebbles/Moon) react when you meow?"), false),
 
 				volSlider,
 				volLabel
