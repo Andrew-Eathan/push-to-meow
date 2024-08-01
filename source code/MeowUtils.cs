@@ -139,11 +139,11 @@ namespace PushToMeowMod
 		}
 
 		public static bool CanMeow(Player self)
-        {
-            bool isGrabbedByNonPlayer = self.grabbedBy.Count > 0 && !(self.grabbedBy[0].grabber is Player);
+		{
+			bool isGrabbedByNonPlayer = self.grabbedBy.Count > 0 && !(self.grabbedBy[0].grabber is Player);
 
-            // ignore grab check if panic meowing isnt allowed
-            if (self.dead || (isGrabbedByNonPlayer && !PushToMeowMain.ModSettings.CanPanicMeow.Value))
+			// ignore grab check if panic meowing isnt allowed
+			if (self.dead || (isGrabbedByNonPlayer && !PushToMeowMain.ModSettings.CanPanicMeow.Value))
 			{
 				PushToMeowMain.PLogger.LogInfo("dead so no meow >:( " + self + " " + self.Consious + " " + self.playerState.playerNumber);
 				return false;
@@ -187,14 +187,14 @@ namespace PushToMeowMod
 			// if something adds a custom meow sound for rivulet, ignore the default one
 			if (slugcatID == "Rivulet" && !CustomMeows.ContainsKey(slugcatID))
 			{
-                bool altRivuletSounds = PushToMeowMain.ModSettings.AltRivuletSounds.Value;
+				bool altRivuletSounds = PushToMeowMain.ModSettings.AltRivuletSounds.Value;
 
-                var SlugcatMeowRivuletShort = altRivuletSounds ? SlugcatMeowRivuletBShort : SlugcatMeowRivuletAShort;
-                var SlugcatMeowRivulet = altRivuletSounds ? SlugcatMeowRivuletB : SlugcatMeowRivuletA;
-                meowType = isShortMeow ? SlugcatMeowRivuletShort : SlugcatMeowRivulet;
+				var SlugcatMeowRivuletShort = altRivuletSounds ? SlugcatMeowRivuletBShort : SlugcatMeowRivuletAShort;
+				var SlugcatMeowRivulet = altRivuletSounds ? SlugcatMeowRivuletB : SlugcatMeowRivuletA;
+				meowType = isShortMeow ? SlugcatMeowRivuletShort : SlugcatMeowRivulet;
 
-                volume *= 0.8f; // 0.8x volume for rivulet
-            }
+				volume *= 0.8f; // 0.8x volume for rivulet
+			}
 			else {
 				// try to find a custom SoundID for this slugcat type
 				if (CustomMeows.ContainsKey(slugcatID))
@@ -243,27 +243,27 @@ namespace PushToMeowMod
 			if (!(self.graphicsModule is PlayerGraphics gm)) return;
 
 			// fling tail to side opposite to the one spear is facing
-            float horizFling = -self.flipDirection * Random.Range(2, 3);
+			float horizFling = -self.flipDirection * Random.Range(2, 3);
 
 			// flop tail up
-            for (int i = 0; i < gm.tail.Length; i++)
+			for (int i = 0; i < gm.tail.Length; i++)
 				gm.tail[i].vel = new Vector2(horizFling, Random.Range(3, 6) / 2f * (i - 1) * 1.5f);
 
 			// flop tail back down
 			Timer down = new Timer(Random.Range(80, 140)) { AutoReset = false };
 			down.Elapsed += (object a, ElapsedEventArgs b) =>
 			{
-                for (int i = 0; i < gm.tail.Length; i++)
-                    gm.tail[i].vel = new Vector2(horizFling, -Random.Range(4, 8) / 3f * (i - 1) * 1.5f);
+				for (int i = 0; i < gm.tail.Length; i++)
+					gm.tail[i].vel = new Vector2(horizFling, -Random.Range(4, 8) / 3f * (i - 1) * 1.5f);
 
 				down.Dispose();
-            };
+			};
 			down.Start();
 
 			PushToMeowMain.PLogger.LogInfo("spear ma balz");
-        }
+		}
 
-        public static void LoadCustomMeows()
+		public static void LoadCustomMeows()
 		{
 			CustomMeows.Clear();
 
@@ -282,27 +282,27 @@ namespace PushToMeowMod
 					if (fileName != "custom_meows.json") continue;
 
 					Logger.LogInfo("Reading file " + file);
-                    CustomMeowWrapperJson meowfile = JsonConvert.DeserializeObject<CustomMeowWrapperJson>(File.ReadAllText(file));
-                    CustomMeowJson[] meows = meowfile.custom_meows;
+					CustomMeowWrapperJson meowfile = JsonConvert.DeserializeObject<CustomMeowWrapperJson>(File.ReadAllText(file));
+					CustomMeowJson[] meows = meowfile.custom_meows;
 
-                    if (meows == null || meows.Length == 0)
-                    {
-                        Logger.LogError("Custom meow file " + file + " had no meows inside! Please add some :(");
-                        continue;
-                    }
+					if (meows == null || meows.Length == 0)
+					{
+						Logger.LogError("Custom meow file " + file + " had no meows inside! Please add some :(");
+						continue;
+					}
 
 					meowfile._file = file;
-                    meowfiles.Add(meowfile);
+					meowfiles.Add(meowfile);
 				}
 
 				// sort files from lowest priority to highest,
 				// this means higher priority files will overwrite existing slugcats from lower ones
 				meowfiles = meowfiles.OrderBy(o => o.priority).ToList();
 
-                foreach (CustomMeowWrapperJson meowfile in meowfiles)
-                {
+				foreach (CustomMeowWrapperJson meowfile in meowfiles)
+				{
 					Logger.LogInfo("Loading meows from file " + meowfile._file + " (priority: " + meowfile.priority + ")");
-                    CustomMeowJson[] meows = meowfile.custom_meows;
+					CustomMeowJson[] meows = meowfile.custom_meows;
 
 					foreach (CustomMeowJson slugcat in meows) 
 					{
@@ -318,17 +318,17 @@ namespace PushToMeowMod
 						Logger.LogInfo("    short meow pup SoundID = " + (slugcat.short_meow_pup_soundid ?? "(none)"));
 						Logger.LogInfo("     long meow pup SoundID = " + (slugcat.long_meow_pup_soundid ?? "(none)"));
 						Logger.LogInfo("     volume mul: " + slugcat.volume_multiplier + "x");
-                        Logger.LogInfo("");
+						Logger.LogInfo("");
 
 						CustomMeows.Add(slugcat.slugcat_id, new CustomMeow()
 						{
 							SlugcatID = slugcat.slugcat_id,
 							FilePath = meowfile._file,
 							VolumeMultiplier = slugcat.volume_multiplier,
-                            ShortMeowSoundID = slugcat.short_meow_soundid != null ? new SoundID(slugcat.short_meow_soundid, true) : null,
+							ShortMeowSoundID = slugcat.short_meow_soundid != null ? new SoundID(slugcat.short_meow_soundid, true) : null,
 							LongMeowSoundID = slugcat.long_meow_soundid != null ? new SoundID(slugcat.long_meow_soundid, true) : null,
 							ShortMeowPupSoundID = slugcat.short_meow_pup_soundid != null ? new SoundID(slugcat.short_meow_pup_soundid, true) : null,
-                            LongMeowPupSoundID = slugcat.long_meow_pup_soundid != null ? new SoundID(slugcat.long_meow_pup_soundid, true) : null
+							LongMeowPupSoundID = slugcat.long_meow_pup_soundid != null ? new SoundID(slugcat.long_meow_pup_soundid, true) : null
 						});
 					}
 				}
@@ -345,9 +345,16 @@ namespace PushToMeowMod
 
 		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
 
-        public static void HandleNPCSlugcat(Player self)
-        {
-            // TBD
-        }
-    }
+		public static void HandleNPCSlugcat(Player self, PushToMeowMain plugin)
+		{
+			if (!SlugNPCLastMeow.ContainsKey(self))
+				SlugNPCLastMeow.Add(self, 0);
+
+			if (Time.time - SlugNPCLastMeow[self] > 0.5)
+			{
+				plugin.DoMeow(self, Random.value > 0.5f);
+				SlugNPCLastMeow[self] = Time.time;
+			}
+		}
+	}
 }

@@ -89,7 +89,7 @@ namespace PushToMeowMod
 			if (oracle.health == 0) return;
 			if (!PushToMeowMain.ModSettings.DoOraclesReact.Value) return;
 			if (oracle == null || oracle.oracleBehavior == null) return;
-            ManualLogSource Logger = PushToMeowMain.PLogger;
+			ManualLogSource Logger = PushToMeowMain.PLogger;
 
 			if (oracle.oracleBehavior is SLOracleBehaviorHasMark) // looks to the moon with mark
 			{
