@@ -8,12 +8,20 @@ using UnityEngine;
 
 // mod idea & programmer: andreweathan
 // meow sound design, thumbnail & trailer: cioss (aka cioss21)
+// translation/slugpup ai programmer: vultumast
+// translators: 
+// @NeiDrakos - Spanish (Spain)
+// @Ray261 - Portuguese (Brazil)
+// Jas3019 - Russian
+// @thomasnet_mc - French (France)
+// @daniela@lethallava.land - German
 
 // changelogs:
 // 1.0 - everything related to meowing
 // 1.0.1 - bubbling when meowing underwater, also uses up lung air and slightly lower pitched
 // 1.1 - add custom meow support for custom slugcats, small bugfixes n tweaks, meow volume slider in settings, massively clean up code
 // 1.1.1 - add saint meow, add slugpup meowing
+// 1.2.0 - add translations, add slugpup ai
 
 namespace PushToMeowMod
 {
@@ -43,7 +51,7 @@ namespace PushToMeowMod
 		// stores a quick lookup table for players used to access the player entity to handle meow button release
 		public Dictionary<int, Player> PlayersLookup = new Dictionary<int, Player>();
 
-		private bool RotundWorldSupportEnabled = false;
+		public static bool RotundWorldSupportEnabled { get; private set; } = false;
 
 		private void OnEnable()
 		{
@@ -61,12 +69,15 @@ namespace PushToMeowMod
 			if (Meow == null)
 				Meow = PlayerKeybind.Register("pushtomeow:meow", "Push to Meow", "Meow", KeyCode.M, KeyCode.JoystickButton3);
 
-			Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
+            Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
 		}
 
 		private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
 		{
 			orig(self);
+
+			Translator.RainWorld = self;
+			Translator.Logger = Logger;
 
 			ModSettings = new MeowMeowOptions(this);
 			MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
@@ -75,7 +86,10 @@ namespace PushToMeowMod
 			MeowUtils.LoadCustomMeows();
 			Logger.LogInfo("loaded custom meows :3");
 
-			for (int i = 0; i < ModManager.ActiveMods.Count; i++)
+
+            SetDefaultTranslations();
+
+            for (int i = 0; i < ModManager.ActiveMods.Count; i++)
 			{
 				if (ModManager.ActiveMods[i].id == "willowwisp.bellyplus")
 				{
@@ -85,10 +99,145 @@ namespace PushToMeowMod
 			}
 		}
 
+		private void SetDefaultTranslations()
+		{
+            Logger.LogInfo("Adding Default Translations");
+
+            SetSpanish();
+			SetFrench();
+			SetRussian();
+			SetPortuguese();
+			SetGerman();
+
+			return;
+
+			void SetSpanish()
+			{
+                var id = InGameTranslator.LanguageID.Spanish;
+
+                Translator.AddTranslation("...", id, "...");
+                Translator.AddTranslation("Are you taunting me?", id, "¿Te estás burlando de mi?");
+                Translator.AddTranslation("...What is it? Oh, forget it, I don't care...", id, "...¿Que pasa? Oh, olvidalo, no me importa...");
+
+                Translator.AddTranslation("Yes? What's wrong?", id, "¿Si? ¿Qué ocurre?");
+                Translator.AddTranslation("Meow?", id, "Meow?");
+                Translator.AddTranslation("Meow.", id, "Meow.");
+                Translator.AddTranslation("Meow...?", id, "Meow...?");
+                Translator.AddTranslation("Meow!", id, "Meow!");
+
+                Translator.AddTranslation("...I assume from your meowing that you understand me now.", id, "...voy a suponer por tus maullidos que me entiendes.");
+                Translator.AddTranslation("...Can you stop with the yells? This information is relevant to you.", id, "...¿Puedes parar de gritar? Esta información es importante para ti.");
+                Translator.AddTranslation("Please quit that immediately.", id, "Por favor, detente ahora mismo.");
+                Translator.AddTranslation("You had your chances. Leave now.", id, "Tuviste tu oportunidad. Vete ahora mismo.");
+                Translator.AddTranslation("What is it?", id, "¿Qué ocurre?");
+                Translator.AddTranslation("I have nothing for you. Please stop meowing.", id, "No tengo nada para ti. Porfavor para de maullar.");
+                Translator.AddTranslation("Please quit meowing, I'm reading you your pearl.", id, "Porfavor, deja de maullar, estoy leyendo tu perla.");
+                Translator.AddTranslation("If you keep going with this, I will not continue reading it.", id, "Si continuas asi voy a dejar de leerla.");
+            }
+
+            void SetFrench()
+            {
+                var id = InGameTranslator.LanguageID.French;
+
+                Translator.AddTranslation("...", id, "...");
+                Translator.AddTranslation("Are you taunting me?", id, "Tu te moques de moi ?");
+                Translator.AddTranslation("...What is it? Oh, forget it, I don't care...", id, "...Quoi ? Pff, oublie. J'm'en fiche...");
+
+                Translator.AddTranslation("Yes? What's wrong?", id, "Oui ? Tout va bien ?");
+                Translator.AddTranslation("Meow?", id, "Miaou ?");
+                Translator.AddTranslation("Meow.", id, "Miaou.");
+                Translator.AddTranslation("Meow...?", id, "Miaou...?");
+                Translator.AddTranslation("Meow!", id, "Miaou !");
+
+                Translator.AddTranslation("...I assume from your meowing that you understand me now.", id, "..Je déduis de tes miaulements que tu me comprends, maintenant.");
+                Translator.AddTranslation("...Can you stop with the yells? This information is relevant to you.", id, "...Tu pourrais arrêter avec tes cris ? C'est important pour toi, ce que je te dis.");
+                Translator.AddTranslation("Please quit that immediately.", id, "Arrête ça immédiatement.");
+                Translator.AddTranslation("You had your chances. Leave now.", id, "Tu as gâché ta chance. Pars d'ici. Maintenant.");
+                Translator.AddTranslation("What is it?", id, "Quoi ?");
+                Translator.AddTranslation("I have nothing for you. Please stop meowing.", id, "Je n'ai rien pour toi. Arrête avec tes miaulements.");
+                Translator.AddTranslation("Please quit meowing, I'm reading you your pearl.", id, "Arrête de miauler, je lis dans ta perle.");
+                Translator.AddTranslation("If you keep going with this, I will not continue reading it.", id, "Si tu n'arrêtes pas de miauler illico, ta perle, tu peux l'oublier !");
+            }
+
+            void SetRussian()
+            {
+                var id = InGameTranslator.LanguageID.Russian;
+
+                Translator.AddTranslation("...", id, "...");
+                Translator.AddTranslation("Are you taunting me?", id, "Ты насмехаешься надо мной?");
+                Translator.AddTranslation("...What is it? Oh, forget it, I don't care...", id, "...Что опять? Ох, забудь, мне уже всё равно...");
+
+                Translator.AddTranslation("Yes? What's wrong?", id, "Да? Что-то не так?");
+                Translator.AddTranslation("Meow?", id, "Мяу?");
+                Translator.AddTranslation("Meow.", id, "Мяу.");
+                Translator.AddTranslation("Meow...?", id, "Мяу...?");
+                Translator.AddTranslation("Meow!", id, "Мяу!");
+
+                Translator.AddTranslation("...I assume from your meowing that you understand me now.", id, "...Насколько я слышу, ты меня понимаешь.");
+                Translator.AddTranslation("...Can you stop with the yells? This information is relevant to you.", id, "...Может прекратишь кричать? Эта информация важна для тебя.");
+                Translator.AddTranslation("Please quit that immediately.", id, "Прекрати сейчас же... Пожалуйста.");
+                Translator.AddTranslation("You had your chances. Leave now.", id, "У тебя был шанс. Уходи.");
+                Translator.AddTranslation("What is it?", id, "Что тебе нужно?");
+                Translator.AddTranslation("I have nothing for you. Please stop meowing.", id, "У меня для тебя ничего нет. Пожалуйста, не мяукай.");
+                Translator.AddTranslation("Please quit meowing, I'm reading you your pearl.", id, "Пожалуйста прекрати мяукать, я читаю твою жемчужину.");
+                Translator.AddTranslation("If you keep going with this, I will not continue reading it.", id, "Если ты продолжишь то я перестану читать.");
+            }
+
+            void SetPortuguese()
+            {
+                var id = InGameTranslator.LanguageID.Portuguese;
+
+                Translator.AddTranslation("...", id, "...");
+                Translator.AddTranslation("Are you taunting me?", id, "Você está tentando me provocar?");
+                Translator.AddTranslation("...What is it? Oh, forget it, I don't care...", id, "...O que foi? Ah, esqueça, eu não me importo...");
+
+                Translator.AddTranslation("Yes? What's wrong?", id, "Sim? Tá tudo bem?");
+                Translator.AddTranslation("Meow?", id, "Miau?");
+                Translator.AddTranslation("Meow.", id, "Miau.");
+                Translator.AddTranslation("Meow...?", id, "Miau...?");
+                Translator.AddTranslation("Meow!", id, "Miau!");
+
+                Translator.AddTranslation("...I assume from your meowing that you understand me now.", id, "...Eu assumo pelos seus miados que você possa me entender agora.");
+                Translator.AddTranslation("...Can you stop with the yells? This information is relevant to you.", id, "...Você pode parar com os seus miados? Essa informação é importante para você.");
+                Translator.AddTranslation("Please quit that immediately.", id, "Pare com isso imediatamente.");
+                Translator.AddTranslation("You had your chances. Leave now.", id, "Você teve sua chance. Saia imediatamente.");
+                Translator.AddTranslation("What is it?", id, "O que é?");
+                Translator.AddTranslation("I have nothing for you. Please stop meowing.", id, "Eu não tenho nada para você. Por favor, pare de miar.");
+                Translator.AddTranslation("Please quit meowing, I'm reading you your pearl.", id, "Por favor, pare de miar, Eu estou lendo sua pérola.");
+                Translator.AddTranslation("If you keep going with this, I will not continue reading it.", id, "Se você continuar fazendo isso, eu não vou continuar lendo.");
+            }
+            void SetGerman()
+            {
+                var id = InGameTranslator.LanguageID.German;
+
+                Translator.AddTranslation("...", id, "...");
+                Translator.AddTranslation("Are you taunting me?", id, "Machst du dich lustig über mich?");
+                Translator.AddTranslation("...What is it? Oh, forget it, I don't care...", id, "...Was ist es? Ach, vergiss es, es ist mir egal...");
+
+                Translator.AddTranslation("Yes? What's wrong?", id, "Ja? Was ist los?");
+                Translator.AddTranslation("Meow?", id, "Miau?");
+                Translator.AddTranslation("Meow.", id, "Miau.");
+                Translator.AddTranslation("Meow...?", id, "Miau...?");
+                Translator.AddTranslation("Meow!", id, "Miau!");
+
+                Translator.AddTranslation("...I assume from your meowing that you understand me now.", id, "...Ich vermute von deinem Miauen, dass du mich jetzt verstehst.");
+                Translator.AddTranslation("...Can you stop with the yells? This information is relevant to you.", id, "...Kannst du mit dem Schreien aufhören? Diese Information ist für dich relevant.");
+                Translator.AddTranslation("Please quit that immediately.", id, "Bitte, höre sofort damit auf.");
+                Translator.AddTranslation("You had your chances. Leave now.", id, "Du hattest deine Chance. Gehe jetzt.");
+                Translator.AddTranslation("What is it?", id, "Was ist es?");
+                Translator.AddTranslation("I have nothing for you. Please stop meowing.", id, "Ich habe nichts für dich. Bitte höre auf zu Miauen.");
+                Translator.AddTranslation("Please quit meowing, I'm reading you your pearl.", id, "Bitte höre mit dem Miauen auf, ich lese dir deine Perle.");
+                Translator.AddTranslation("If you keep going with this, I will not continue reading it.", id, "Wenn du weiter damit machst, werde ich nicht weiter lesen.");
+            }
+        }
+
+
 		// to reset all state values of Push to Meow
 		private void ResetPTMStateValues(On.RainWorldGame.orig_RestartGame orig, RainWorldGame self)
 		{
+#if DEBUG
 			Logger.LogInfo("game session restart so clearing all meow meow data :)");
+#endif
 			PlayersMeowButtonLastState?.Clear();
 			PlayersLastMeowTime?.Clear();
 			PlayersLookup?.Clear();
@@ -115,7 +264,9 @@ namespace PushToMeowMod
 				)  {
 					DoMeow(PlayersLookup[playerIdx]);
 					PlayersMeowingState[playerIdx] = MeowState.MeowedLong;
+#if DEBUG
 					Logger.LogInfo("meow long " + playerIdx + " " + PlayersLookup[playerIdx] + " " + timeSinceMeowPress);
+#endif
 				}
 			}
 		}
@@ -150,8 +301,9 @@ namespace PushToMeowMod
 					fattestChunkMass = Mathf.Max(fattestChunkMass, chunk.mass);
 
 				float pitchChange = Mathf.Clamp((fattestChunkMass - baseChunkWeight) / 1.35f, 0, 0.55f);
+#if DEBUG
 				Logger.LogInfo("ROTUND WORLD COMPAT: lowered pitch to " + (pitch - pitchChange) + " from " + pitch);
-
+#endif
 				pitch -= pitchChange;
 			}
 
@@ -188,10 +340,12 @@ namespace PushToMeowMod
 					else self.room.AddObject(new Bubble(self.firstChunk.pos, self.firstChunk.vel, false, false));
 				}
 
+#if DEBUG
 			Logger.LogInfo("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
-		}
+#endif
+        }
 
-		private void HandleMeowInput(On.Player.orig_Update orig, Player self, bool wtfIsThisBool)
+        private void HandleMeowInput(On.Player.orig_Update orig, Player self, bool wtfIsThisBool)
 		{
 			orig(self, wtfIsThisBool);
 
@@ -236,7 +390,9 @@ namespace PushToMeowMod
 					{
 						DoMeow(self, true);
 						PlayersMeowingState[plyNumber] = MeowState.MeowedShort;
+#if DEBUG
 						Debug.Log("did short meow");
+#endif
 					}
 
 					PlayersMeowButtonLastState[plyNumber] = false;

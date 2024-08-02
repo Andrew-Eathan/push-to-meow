@@ -113,9 +113,9 @@ namespace PushToMeowMod
 				var likes = SLOrcacleState.PlayerOpinion.Likes;
 				var neutral = SLOrcacleState.PlayerOpinion.Neutral;
 				var dislikes = SLOrcacleState.PlayerOpinion.Dislikes;
-
+#if DEBUG
 				Logger?.LogInfo(oracle + " is sl mark, dist: " + dist + ", slcounter: " + MeowSLCounter);
-
+#endif
 				if (dist > 25) return; // ignore meow if slugcat is too far
 
 				if (MeowSLCanRespondCounter > 0)
@@ -159,14 +159,15 @@ namespace PushToMeowMod
 
 				doReactionTimer.Elapsed += (object _, ElapsedEventArgs e) =>
 				{
-					sl.dialogBox.Interrupt(slReaction, 0);
+					sl.dialogBox.Interrupt(Translator.Translate(slReaction), 0);
 					MeowSLCanRespondCounter = 0;
 				};
 			}
 			else if (oracle.oracleBehavior is SLOracleBehaviorNoMark) // looks to the moon without mark
 			{
+#if DEBUG
 				Logger?.LogInfo(oracle + " is sl no mark");
-
+#endif
 				Timer doSoundTimer =
 					new Timer(300 + UnityEngine.Random.value * 400) { AutoReset = false, Enabled = true };
 
@@ -182,16 +183,18 @@ namespace PushToMeowMod
 						case 3: sl.AirVoice(SoundID.SL_AI_Talk_4); break;
 						case 4: sl.AirVoice(SoundID.SL_AI_Talk_5); break;
 					}
-
-					Logger?.LogInfo("played SL markless reaction :D");
+#if DEBUG
+                    Logger?.LogInfo("played SL markless reaction :D");
+#endif
 				};
 			}
 			else if (oracle.oracleBehavior is SSOracleBehavior) // five pebbles
 			{
 				var ss = oracle.oracleBehavior as SSOracleBehavior;
 
+#if DEBUG
 				Logger?.LogInfo("CONVO " + ss.conversation);
-
+#endif
 				if (ss.conversation != null)
 				{
 					if (ss.conversation.events.Count > 0 && ss.conversation.events[0] is Conversation.TextEvent)
@@ -202,14 +205,16 @@ namespace PushToMeowMod
 						{
 							MeowFlagSSReaching = true;
 							// he acknowledges that you meowed as a response
-							ss.conversation.events.Insert(2, new Conversation.TextEvent(ss.conversation, 0, ss.conversation.Translate(SSMeowAfterIsThisReachingYou), 0));
+							ss.conversation.events.Insert(2, new Conversation.TextEvent(ss.conversation, 0, Translator.Translate(SSMeowAfterIsThisReachingYou), 0));
 							return;
 						}
 
 						// ignore spam meows to help with multiplayer
 						if (Time.time - MeowSSLastTimeBothered < 1.3)
 						{
+#if DEBUG
 							Logger?.LogInfo("Ignoring oracle meow spam");
+#endif
 							return;
 						}
 
@@ -221,9 +226,10 @@ namespace PushToMeowMod
 
 						MeowSSCounter++;
 						MeowSSLastTimeBothered = Time.time;
-
+#if DEBUG
 						Logger?.LogInfo(MeowSSCounter + " meow counter");
 						Logger?.LogInfo(MeowSSAngerStage + " anger stage");
+#endif
 
 						if (MeowSSCounter == 5)
 						{
@@ -232,10 +238,10 @@ namespace PushToMeowMod
 
 							switch (MeowSSAngerStage)
 							{
-								case 1: ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue1), 0); break;
-								case 2: ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue2), 0); break;
+								case 1: ss.conversation.Interrupt(Translator.Translate(SSMeowALotDuringHisDialogue1), 0); break;
+								case 2: ss.conversation.Interrupt(Translator.Translate(SSMeowALotDuringHisDialogue2), 0); break;
 								case 3:
-								ss.conversation.Interrupt(ss.conversation.Translate(SSMeowALotDuringHisDialogue3), 0);
+								ss.conversation.Interrupt(Translator.Translate(SSMeowALotDuringHisDialogue3), 0);
 								ss.conversation.Destroy();
 								ss.conversation = null;
 								ss.NewAction(SSOracleBehavior.Action.ThrowOut_ThrowOut);
@@ -269,8 +275,8 @@ namespace PushToMeowMod
 
 						switch (MeowSSAngerStage1)
 						{
-							case 1: ss.dialogBox.Interrupt(SSMeowReaction1, 0); break;
-							case 2: ss.dialogBox.Interrupt(SSMeowReaction2, 0); break;
+							case 1: ss.dialogBox.Interrupt(Translator.Translate(SSMeowReaction1), 0); break;
+							case 2: ss.dialogBox.Interrupt(Translator.Translate(SSMeowReaction2), 0); break;
 						}
 					}
 				}
