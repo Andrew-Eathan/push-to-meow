@@ -63,7 +63,10 @@ namespace PushToMeowMod
 
 		public static Dictionary<string, CustomMeow> CustomMeows = new Dictionary<string, CustomMeow>();
 
-		public static void InitialiseSoundIDs(ManualLogSource logger)
+        internal static PushToMeowMain PushToMeowPlugin = null;
+
+
+        public static void InitialiseSoundIDs(ManualLogSource logger)
 		{
 			SlugcatMeowRivuletA = new SoundID("SlugcatMeowRivuletA", true);
 			SlugcatMeowRivuletB = new SoundID("SlugcatMeowRivuletB", true);
@@ -344,17 +347,19 @@ namespace PushToMeowMod
 		}
 
 		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
-
-		public static void HandleNPCSlugcat(Player self, PushToMeowMain plugin)
+		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
 		{
 			if (!SlugNPCLastMeow.ContainsKey(self))
 				SlugNPCLastMeow.Add(self, 0);
-
+			
 			if (Time.time - SlugNPCLastMeow[self] > 0.5)
 			{
-				plugin.DoMeow(self, Random.value > 0.5f);
-				SlugNPCLastMeow[self] = Time.time;
+                PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
+				SlugNPCLastMeow[self] = Time.time + meowTimer;
+				PushToMeowMain.PLogger.LogMessage($"Next meow will be: {Time.time + meowTimer}");
 			}
 		}
+
+
 	}
 }

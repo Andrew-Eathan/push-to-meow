@@ -1,9 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using ImprovedInput;
+using Microsoft.Win32.SafeHandles;
 using MoreSlugcats;
+using Newtonsoft.Json.Linq;
+using PushToMeowMod.Vanilla_Hooks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 // mod idea & programmer: andreweathan
@@ -29,6 +35,8 @@ namespace PushToMeowMod
 	public partial class PushToMeowMain : BaseUnityPlugin
 	{
 		public static ManualLogSource PLogger;
+
+		public const string ROTUND_WORLD_IDENTIFER = "willowwisp.bellyplus";
 
 		public const string PLUGIN_GUID = "pushtomeow";
 		public const string PLUGIN_NAME = "Push to Meow";
@@ -56,6 +64,7 @@ namespace PushToMeowMod
 		private void OnEnable()
 		{
 			PLogger = Logger;
+			MeowUtils.PushToMeowPlugin = this;
 			MeowUtils.InitialiseSoundIDs(Logger);
 
 			// for good measure during hot reload
@@ -72,26 +81,29 @@ namespace PushToMeowMod
             Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
 		}
 
-		private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
+        private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
 		{
-			orig(self);
+            orig(self);
 
 			Translator.RainWorld = self;
 			Translator.Logger = Logger;
 
-			ModSettings = new MeowMeowOptions(this);
+            Vanilla_Hooks.SlugNPCMeowAI.RainWorld = self;
+
+            ModSettings = new MeowMeowOptions(this);
 			MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
 			Logger.LogInfo("Registered OI");
 
 			MeowUtils.LoadCustomMeows();
 			Logger.LogInfo("loaded custom meows :3");
 
+            Vanilla_Hooks.SlugNPCMeowAI.AttachHooks();
 
             SetDefaultTranslations();
 
             for (int i = 0; i < ModManager.ActiveMods.Count; i++)
 			{
-				if (ModManager.ActiveMods[i].id == "willowwisp.bellyplus")
+				if (ModManager.ActiveMods[i].id == ROTUND_WORLD_IDENTIFER)
 				{
 					RotundWorldSupportEnabled = true;
 					Logger.LogInfo("found rotund world, enabling support in PtM :)");
@@ -99,7 +111,7 @@ namespace PushToMeowMod
 			}
 		}
 
-		private void SetDefaultTranslations()
+        private void SetDefaultTranslations()
 		{
             Logger.LogInfo("Adding Default Translations");
 
@@ -349,12 +361,6 @@ namespace PushToMeowMod
 		{
 			orig(self, wtfIsThisBool);
 
-			if (self.isNPC)
-			{
-				MeowUtils.HandleNPCSlugcat(self, this);
-				return;
-			}
-
 			try
 			{
 				int plyNumber = self.playerState.playerNumber;
@@ -391,7 +397,7 @@ namespace PushToMeowMod
 						DoMeow(self, true);
 						PlayersMeowingState[plyNumber] = MeowState.MeowedShort;
 #if DEBUG
-						Debug.Log("did short meow");
+                        Logger.LogDebug("did short meow");
 #endif
 					}
 
@@ -402,7 +408,9 @@ namespace PushToMeowMod
 			catch (Exception e)
 			{
 				Logger.LogError("error when ticking meow update: " + e);
-				Debug.LogException(e);
+#if DEBUG
+				Logger.LogDebug(e);
+#endif
 			}
 		}
 	}
