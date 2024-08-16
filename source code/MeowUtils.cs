@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 using System.Linq;
 using System.ComponentModel;
 using MoreSlugcats;
+using IL.JollyCoop;
 
 namespace PushToMeowMod
 {
@@ -61,6 +62,8 @@ namespace PushToMeowMod
 		public static SoundID SlugcatMeowRivuletB { get; internal set; }
 		public static SoundID SlugcatMeowRivuletBShort { get; internal set; }
 
+		public static SoundID SlugcatMeowKatzenEasterEgg { get; internal set; }
+
 		public static Dictionary<string, CustomMeow> CustomMeows = new Dictionary<string, CustomMeow>();
 
         internal static PushToMeowMain PushToMeowPlugin = null;
@@ -77,8 +80,9 @@ namespace PushToMeowMod
 			SlugcatMeowRivuletBShort = new SoundID("SlugcatMeowRivuletBShort", true);
 			SlugcatMeowNormalShort = new SoundID("SlugcatMeowNormalShort", true);
 			SlugcatMeowPupShort = new SoundID("SlugcatMeowPupShort", true);
+            SlugcatMeowKatzenEasterEgg = new SoundID("SlugcatMeowKatzenEasterEgg", true);
 
-			logger.LogInfo("initialised default sound IDs!");
+            logger.LogInfo("initialised default sound IDs!");
 		}
 
 		public static void HandleOracleReactions(Player self)
@@ -181,6 +185,8 @@ namespace PushToMeowMod
 		{
 			var Logger = PushToMeowMain.PLogger;
 
+
+
 			SoundID meowType;
 			bool isPup = self.playerState.isPup;
 			float pitch = isPup ? 1.3f : 1f;
@@ -238,7 +244,13 @@ namespace PushToMeowMod
 			if (self.submerged)
 				pitch -= 0.1f + Random.value * 0.15f;
 
-			return (meowType, pitch, volume);
+			// Vultu: Katzen easter egg
+            var name = JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber);
+			if (name == "Katzen")
+				meowType = SlugcatMeowKatzenEasterEgg;
+			
+
+            return (meowType, pitch, volume);
 		}
 
 		public static void DoSpearmasterTailWiggle(Player self)
@@ -359,7 +371,7 @@ namespace PushToMeowMod
 			{
                 PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
 				SlugNPCLastMeow[self] = Time.time + meowTimer;
-				PushToMeowMain.PLogger.LogMessage($"Next meow will be: {Time.time + meowTimer}");
+				// PushToMeowMain.PLogger.LogMessage($"Next meow will be: {Time.time + meowTimer}");
 			}
 		}
 

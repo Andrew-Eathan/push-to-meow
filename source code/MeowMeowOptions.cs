@@ -18,6 +18,8 @@ namespace PushToMeowMod
 		public readonly Configurable<float> MeowVolumeMultiplier;
         public readonly Configurable<bool> SlugpupPanicMeow;
         public readonly Configurable<bool> SlugpupHungryMeow;
+
+
         public MeowMeowOptions(PushToMeowMain plugin)
 		{
 			AltRivuletSounds = config.Bind("PushToMeow_AlternateRivuletSound", false);
@@ -29,7 +31,7 @@ namespace PushToMeowMod
 			MeowVolumeMultiplier = config.Bind("PushToMeow_MeowVolumeMultiplier", 0.85f);
 
 			SlugpupPanicMeow = config.Bind("PushToMeow_SlugpupPanicMeow", true);
-            SlugpupHungryMeow = config.Bind("PushToMeow_SlugpupHungryMeow", true);
+			SlugpupHungryMeow = config.Bind("PushToMeow_SlugpupHungryMeow", true);
         }
 
 		public override void Initialize()
