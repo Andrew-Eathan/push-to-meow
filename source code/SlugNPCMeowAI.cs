@@ -42,10 +42,9 @@ namespace PushToMeowMod.Vanilla_Hooks
                 // Vultu: HELP!!!
 
                 var graspPercentage = (float)self.dangerGraspTime / 1000f;
-                Logger.LogMessage($"PERC: {graspPercentage}");
                 float targetTime = Mathf.Lerp(0.75f, 3f, graspPercentage * UnityEngine.Random.Range(0.1f, 1.0f));
 
-                // Vultu: Reset time if it's greather than 3
+                // Vultu: Reset time if it's greather than targetTime
                 if (MeowUtils.SlugNPCLastMeow.ContainsKey(self))
                 {
                     var meowTime = MeowUtils.SlugNPCLastMeow[self];
