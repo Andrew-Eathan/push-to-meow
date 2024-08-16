@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using IL.Menu.Remix.MixedUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace PushToMeowMod.Vanilla_Hooks
 
 
                 // Vultu: HELP!!!
-                MeowUtils.HandleNPCSlugcat(self, targetTime));
+                MeowUtils.HandleNPCSlugcat(self, targetTime);
                 return;
             }
         }

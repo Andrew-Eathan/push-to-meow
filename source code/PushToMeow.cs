@@ -87,7 +87,8 @@ namespace PushToMeowMod
 
 			Translator.RainWorld = self;
 			Translator.Logger = Logger;
-
+			
+		
             Vanilla_Hooks.SlugNPCMeowAI.RainWorld = self;
 
             ModSettings = new MeowMeowOptions(this);
@@ -360,6 +361,9 @@ namespace PushToMeowMod
         private void HandleMeowInput(On.Player.orig_Update orig, Player self, bool wtfIsThisBool)
 		{
 			orig(self, wtfIsThisBool);
+
+			if (self.isNPC)
+				return;
 
 			try
 			{

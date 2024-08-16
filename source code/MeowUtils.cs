@@ -349,6 +349,9 @@ namespace PushToMeowMod
 		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
 		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
 		{
+			if (!self.isNPC)
+				return;
+
 			if (!SlugNPCLastMeow.ContainsKey(self))
 				SlugNPCLastMeow.Add(self, 0);
 			
