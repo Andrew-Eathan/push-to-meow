@@ -83,7 +83,7 @@ namespace PushToMeowMod.Vanilla_Hooks
         {
             orig(self);
 
-            if (self.cat.dead)
+            if (self.cat.dead || self.nap)
                 return;
 
             if (self.cat.slugcatStats.foodToHibernate > self.cat.CurrentFood)

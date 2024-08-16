@@ -16,8 +16,9 @@ namespace PushToMeowMod
 		public readonly Configurable<bool> CanPanicMeow;
 		public readonly Configurable<bool> DoOraclesReact; // whether iterators react to meowing
 		public readonly Configurable<float> MeowVolumeMultiplier;
-
-		public MeowMeowOptions(PushToMeowMain plugin)
+        public readonly Configurable<bool> SlugpupPanicMeow;
+        public readonly Configurable<bool> SlugpupHungryMeow;
+        public MeowMeowOptions(PushToMeowMain plugin)
 		{
 			AltRivuletSounds = config.Bind("PushToMeow_AlternateRivuletSound", false);
 			AlertCreatures = config.Bind("PushToMeow_AlertCreatures", true);
@@ -26,7 +27,10 @@ namespace PushToMeowMod
 			CanPanicMeow = config.Bind("PushToMeow_CanPanicMeow", true);
 			DoOraclesReact = config.Bind("PushToMeow_DoOraclesReact", true);
 			MeowVolumeMultiplier = config.Bind("PushToMeow_MeowVolumeMultiplier", 0.85f);
-		}
+
+			SlugpupPanicMeow = config.Bind("PushToMeow_SlugpupPanicMeow", true);
+            SlugpupHungryMeow = config.Bind("PushToMeow_SlugpupHungryMeow", true);
+        }
 
 		public override void Initialize()
 		{
@@ -72,8 +76,8 @@ namespace PushToMeowMod
 				tab1Container.container.AddChild(lineSprite);
 			}*/
 
-			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
-			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
+			OpLabel volLabel = new OpLabel(10, 330 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
+			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 330 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
 			
 			volSlider.OnChange += () =>
 			{
@@ -95,8 +99,12 @@ namespace PushToMeowMod
 				new OpLabel(45, 570 - 150 + 1, Translator.Translate("Can slugcats panic-meow while being grabbed by lizards?"), false),
 				new OpCheckBox(DoOraclesReact, 10, 570 - 180),
 				new OpLabel(45, 570 - 180 + 1, Translator.Translate("Do iterators (Pebbles/Moon) react when you meow?"), false),
+                new OpCheckBox(SlugpupPanicMeow, 10, 570 - 210),
+                new OpLabel(45, 570 - 210 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
+                new OpCheckBox(SlugpupHungryMeow, 10, 570 - 240),
+                new OpLabel(45, 570 - 240 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
 
-				volSlider,
+                volSlider,
 				volLabel
 			};
 

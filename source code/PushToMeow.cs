@@ -354,7 +354,7 @@ namespace PushToMeowMod
 				}
 
 #if DEBUG
-			Logger.LogInfo("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
+			Logger.LogDebug("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
 #endif
         }
 
