@@ -38,7 +38,7 @@ namespace PushToMeowMod.Vanilla_Hooks
             if (!self.isNPC || self.dead)
                 return;
 
-            if (self.dangerGrasp != null)
+            if (PushToMeowMain.ModSettings.SlugpupPanicMeow.Value && self.dangerGrasp != null)
             {
                 // Vultu: HELP!!!
 
@@ -86,11 +86,14 @@ namespace PushToMeowMod.Vanilla_Hooks
             if (self.cat.dead || self.nap)
                 return;
 
-            if (self.cat.slugcatStats.foodToHibernate > self.cat.CurrentFood)
+            if (PushToMeowMain.ModSettings.SlugpupHungryMeow.Value)
             {
-                // Vultu: I am hungry and I am going to scream.
-                float hungerPercentage = (float)self.cat.CurrentFood / (float)self.cat.slugcatStats.foodToHibernate;
-                MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(35, 160, 1 - hungerPercentage) + UnityEngine.Random.value * 35);
+                if (self.cat.slugcatStats.foodToHibernate > self.cat.CurrentFood)
+                {
+                    // Vultu: I am hungry and I am going to scream.
+                    float hungerPercentage = (float)self.cat.CurrentFood / (float)self.cat.slugcatStats.foodToHibernate;
+                    MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(35, 160, 1 - hungerPercentage) + UnityEngine.Random.value * 35);
+                }
             }
         }
 
