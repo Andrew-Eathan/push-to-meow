@@ -22,6 +22,7 @@ namespace PushToMeowMod.Vanilla_Hooks
             {
                 On.MoreSlugcats.SlugNPCAI.Update += SlugNPCAI_Update;
                 On.Player.Update += Player_Update;
+                On.Player.Stun += Player_Stun;
             }
             catch (Exception ex)
             {
@@ -29,6 +30,20 @@ namespace PushToMeowMod.Vanilla_Hooks
             }
 
             return true;
+        }
+
+        private static void Player_Stun(On.Player.orig_Stun orig, Player self, int st)
+        {
+            orig(self, st);
+
+            if (!self.isNPC || self.dead)
+                return;
+
+            if (self.stunDamageType.value == "Blunt")
+            {
+                MeowUtils.ClearNPCMeowTime(self);
+                MeowUtils.HandleNPCSlugcat(self);
+            }
         }
 
         private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)

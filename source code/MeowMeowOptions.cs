@@ -1,4 +1,5 @@
 ﻿using Menu.Remix.MixedUI;
+using Menu.Remix.MixedUI.ValueTypes;
 using RWCustom;
 using System;
 using System.Collections.Generic;
@@ -78,19 +79,22 @@ namespace PushToMeowMod
 				tab1Container.container.AddChild(lineSprite);
 			}*/
 
-			OpLabel volLabel = new OpLabel(10, 330 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
-			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 330 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
-			
+			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
+			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
+
 			volSlider.OnChange += () =>
 			{
 				volLabel.text = Translator.Translate("Meow Volume: ") + Mathf.Round(float.Parse(volSlider.value) * 100) + "%";
 			};
 
-			UIelement[] opts = new UIelement[]
+			var previewBtn = new OpSimpleButton(new Vector2(meowTab.CanvasSize.x - 80, 570 - 31 + 1), new Vector2(70, 24), "Preview");
+
+            UIelement[] opts = new UIelement[]
 			{
 				new OpLabel(new Vector2(10, 600 - 30), new Vector2(200, 30), Translator.Translate("Push to Meow settings :3 (check out tabs for custom meows)"), FLabelAlignment.Left, true) { verticalAlignment = OpLabel.LabelVAlignment.Top },
 				new OpCheckBox(AltRivuletSounds, 10, 570 - 30),
-				new OpLabel(45, 570 - 30 + 1, Translator.Translate("Use alternate sounds for Rivulet (disabled = sopping wet rat, enabled = high-pitch-y sound)"), false),
+				new OpLabel(45, 570 - 30 + 1, Translator.Translate("Use alternate sounds for Rivulet"), false),
+                previewBtn,
 				new OpCheckBox(AlertCreatures, 10, 570 - 60),
 				new OpLabel(45, 570 - 60 + 1, Translator.Translate("Can meowing alert other creatures?"), false),
 				new OpCheckBox(SpearmasterMeow, 10, 570 - 90),
@@ -101,16 +105,25 @@ namespace PushToMeowMod
 				new OpLabel(45, 570 - 150 + 1, Translator.Translate("Can slugcats panic-meow while being grabbed by lizards?"), false),
 				new OpCheckBox(DoOraclesReact, 10, 570 - 180),
 				new OpLabel(45, 570 - 180 + 1, Translator.Translate("Do iterators (Pebbles/Moon) react when you meow?"), false),
-                new OpCheckBox(SlugpupPanicMeow, 10, 570 - 210),
-                new OpLabel(45, 570 - 210 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
-                new OpCheckBox(SlugpupHungryMeow, 10, 570 - 240),
-                new OpLabel(45, 570 - 240 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
 
                 volSlider,
-				volLabel
+                volLabel,
+
+                new OpLabel(10, 570 - 251 + 1, Translator.Translate("Slugpups"), true),
+
+                new OpCheckBox(SlugpupPanicMeow, 10, 570 - 290),
+                new OpLabel(45, 570 - 290 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
+                new OpCheckBox(SlugpupHungryMeow, 10, 570 - 320),
+                new OpLabel(45, 570 - 320 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
 			};
 
-			meowTab.AddItems(opts);
+            previewBtn.OnClick += (UIfocusable e) =>
+            {
+				// Vultu: This is probably a little cheeky but it works
+				e.PlaySound(((OpCheckBox)opts[1]).GetValueBool() ? MeowUtils.SlugcatMeowRivuletB : MeowUtils.SlugcatMeowRivuletA);
+            };
+
+            meowTab.AddItems(opts);
 
 
 			var vsp = new OpScrollBox(customMeowTab, 2000);
@@ -133,7 +146,8 @@ namespace PushToMeowMod
 			vsp.AddItems(elist.ToArray());
 		}
 
-		private (List<UIelement>, float vertSize) PopulateMeowsList(OpSimpleButton reloadButton)
+
+        private (List<UIelement>, float vertSize) PopulateMeowsList(OpSimpleButton reloadButton)
 		{
 			int interval = 14;
 			int intervalBetweenCMs = 30;

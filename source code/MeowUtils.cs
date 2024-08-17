@@ -11,6 +11,7 @@ using System.Linq;
 using System.ComponentModel;
 using MoreSlugcats;
 using IL.JollyCoop;
+using IL.MoreSlugcats;
 
 namespace PushToMeowMod
 {
@@ -169,7 +170,7 @@ namespace PushToMeowMod
 				lookUpTimer.Elapsed += (object _, ElapsedEventArgs e) =>
 				{
 					// spearmaster wont look up
-					if (self.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Spear)
+					if (self.SlugCatClass != MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear)
 						gm?.LookAtPoint(new Vector2(0, 100000), 69420);
 
 					self.Blink(isShortMeow ? 9 : 11);
@@ -248,6 +249,7 @@ namespace PushToMeowMod
             var name = JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber);
 			if (name == "Katzen")
 				meowType = SlugcatMeowKatzenEasterEgg;
+            
 			
 
             return (meowType, pitch, volume);
@@ -359,6 +361,15 @@ namespace PushToMeowMod
 		}
 
 		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
+
+		public static void ClearNPCMeowTime(Player self)
+		{
+            if (!self.isNPC || !SlugNPCLastMeow.ContainsKey(self))
+                return;
+
+			SlugNPCLastMeow[self] = 0;
+        }
+
 		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
 		{
 			if (!self.isNPC)

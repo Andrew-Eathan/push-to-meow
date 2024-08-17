@@ -40,7 +40,7 @@ namespace PushToMeowMod
 
 		public const string PLUGIN_GUID = "pushtomeow";
 		public const string PLUGIN_NAME = "Push to Meow";
-		public const string PLUGIN_VERSION = "1.1.1";
+        public const string PLUGIN_VERSION = "1.2.0";
 		public const float LongMeowTime = 0.14f; // seconds needed to hold so that long meow plays
 		public const float MeowCooldown = 0.24f; // seconds between meows
 
