@@ -102,6 +102,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(OutputPath)" "C:\Program Files (x86)\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\saveapi\plugins\" /y</PostBuildEvent>
+    <PostBuildEvent>SET rwdir="C:\Program Files (x86)\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\saveapi\plugins\"
+
+cd "$(SolutionDir)"
+cd ..\
+
+XCOPY "$(ProjectDir)..\mod files\" %25rwdir%25 /y /e
+XCOPY "$(OutputPath)" %25rwdir%25 /y
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

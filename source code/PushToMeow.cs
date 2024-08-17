@@ -34,7 +34,8 @@ namespace PushToMeowMod
 	[BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
 	public partial class PushToMeowMain : BaseUnityPlugin
 	{
-		public static ManualLogSource PLogger;
+		public static ManualLogSource PLogger { get; internal set; } = null;
+        public static RainWorld RainWorld { get; internal set; } = null;
 
 		public const string ROTUND_WORLD_IDENTIFER = "willowwisp.bellyplus";
 
@@ -85,8 +86,7 @@ namespace PushToMeowMod
 		{
             orig(self);
 
-			Translator.RainWorld = self;
-			Translator.Logger = Logger;
+			RainWorld = self;
 			
 		
             Vanilla_Hooks.SlugNPCMeowAI.RainWorld = self;

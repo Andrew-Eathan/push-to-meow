@@ -55,22 +55,15 @@ namespace PushToMeowMod.Vanilla_Hooks
 
             if (PushToMeowMain.ModSettings.SlugpupPanicMeow.Value && self.dangerGrasp != null)
             {
+                if (self.dangerGraspTime == 1)
+                    MeowUtils.ClearNPCMeowTime(self);
+
                 // Vultu: HELP!!!
 
                 var graspPercentage = (float)self.dangerGraspTime / 1000f;
-                float targetTime = Mathf.Lerp(0.75f, 3f, graspPercentage * UnityEngine.Random.Range(0.1f, 1.0f));
-
-                // Vultu: Reset time if it's greather than targetTime
-                if (MeowUtils.SlugNPCLastMeow.ContainsKey(self))
-                {
-                    var meowTime = MeowUtils.SlugNPCLastMeow[self];
-
-                    if ((meowTime - Time.time) > targetTime)
-                        MeowUtils.SlugNPCLastMeow[self] = 0;
-                }
+                float targetTime = Mathf.Lerp(0.75f, 3f, Math.Min(graspPercentage * UnityEngine.Random.Range(0.1f, 1.0f), 1.0f));
 
 
-                // Vultu: HELP!!!
                 MeowUtils.HandleNPCSlugcat(self, targetTime);
                 return;
             }
@@ -107,7 +100,7 @@ namespace PushToMeowMod.Vanilla_Hooks
                 {
                     // Vultu: I am hungry and I am going to scream.
                     float hungerPercentage = (float)self.cat.CurrentFood / (float)self.cat.slugcatStats.foodToHibernate;
-                    MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(35, 160, 1 - hungerPercentage) + UnityEngine.Random.value * 35);
+                    MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(15, 85, hungerPercentage) + UnityEngine.Random.value * 20);
                 }
             }
         }
