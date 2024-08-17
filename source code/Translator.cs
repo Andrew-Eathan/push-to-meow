@@ -17,8 +17,8 @@ namespace PushToMeowMod
         private static Dictionary<InGameTranslator.LanguageID, Dictionary<string, string>> _translations = new Dictionary<InGameTranslator.LanguageID, Dictionary<string, string>>();
 
 
-        public static ManualLogSource Logger { get; internal set; } = null;
-        public static RainWorld RainWorld { get; internal set; } = null;
+        public static ManualLogSource Logger => PushToMeowMain.PLogger;
+        public static RainWorld RainWorld => PushToMeowMain.RainWorld;
 
 
         public static bool AddTranslation(string englishText, InGameTranslator.LanguageID languageID, string translatedText)
