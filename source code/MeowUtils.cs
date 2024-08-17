@@ -10,6 +10,8 @@ using Random = UnityEngine.Random;
 using System.Linq;
 using System.ComponentModel;
 using MoreSlugcats;
+using IL.JollyCoop;
+using IL.MoreSlugcats;
 
 namespace PushToMeowMod
 {
@@ -61,9 +63,14 @@ namespace PushToMeowMod
 		public static SoundID SlugcatMeowRivuletB { get; internal set; }
 		public static SoundID SlugcatMeowRivuletBShort { get; internal set; }
 
+		public static SoundID SlugcatMeowKatzenEasterEgg { get; internal set; }
+
 		public static Dictionary<string, CustomMeow> CustomMeows = new Dictionary<string, CustomMeow>();
 
-		public static void InitialiseSoundIDs(ManualLogSource logger)
+        internal static PushToMeowMain PushToMeowPlugin = null;
+
+
+        public static void InitialiseSoundIDs(ManualLogSource logger)
 		{
 			SlugcatMeowRivuletA = new SoundID("SlugcatMeowRivuletA", true);
 			SlugcatMeowRivuletB = new SoundID("SlugcatMeowRivuletB", true);
@@ -74,8 +81,9 @@ namespace PushToMeowMod
 			SlugcatMeowRivuletBShort = new SoundID("SlugcatMeowRivuletBShort", true);
 			SlugcatMeowNormalShort = new SoundID("SlugcatMeowNormalShort", true);
 			SlugcatMeowPupShort = new SoundID("SlugcatMeowPupShort", true);
+            SlugcatMeowKatzenEasterEgg = new SoundID("SlugcatMeowKatzenEasterEgg", true);
 
-			logger.LogInfo("initialised default sound IDs!");
+            logger.LogInfo("initialised default sound IDs!");
 		}
 
 		public static void HandleOracleReactions(Player self)
@@ -162,7 +170,7 @@ namespace PushToMeowMod
 				lookUpTimer.Elapsed += (object _, ElapsedEventArgs e) =>
 				{
 					// spearmaster wont look up
-					if (self.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Spear)
+					if (self.SlugCatClass != MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Spear)
 						gm?.LookAtPoint(new Vector2(0, 100000), 69420);
 
 					self.Blink(isShortMeow ? 9 : 11);
@@ -177,6 +185,8 @@ namespace PushToMeowMod
 		public static (SoundID meowSoundID, float pitch, float volume) FindMeowSoundID(Player self, bool isShortMeow)
 		{
 			var Logger = PushToMeowMain.PLogger;
+
+
 
 			SoundID meowType;
 			bool isPup = self.playerState.isPup;
@@ -235,7 +245,14 @@ namespace PushToMeowMod
 			if (self.submerged)
 				pitch -= 0.1f + Random.value * 0.15f;
 
-			return (meowType, pitch, volume);
+			// Vultu: Katzen easter egg
+            var name = JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber);
+			if (name == "Katzen")
+				meowType = SlugcatMeowKatzenEasterEgg;
+            
+			
+
+            return (meowType, pitch, volume);
 		}
 
 		public static void DoSpearmasterTailWiggle(Player self)
@@ -345,16 +362,30 @@ namespace PushToMeowMod
 
 		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
 
-		public static void HandleNPCSlugcat(Player self, PushToMeowMain plugin)
+		public static void ClearNPCMeowTime(Player self)
 		{
+            if (!self.isNPC || !SlugNPCLastMeow.ContainsKey(self))
+                return;
+
+			SlugNPCLastMeow[self] = 0;
+        }
+
+		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
+		{
+			if (!self.isNPC)
+				return;
+
 			if (!SlugNPCLastMeow.ContainsKey(self))
 				SlugNPCLastMeow.Add(self, 0);
-
+			
 			if (Time.time - SlugNPCLastMeow[self] > 0.5)
 			{
-				plugin.DoMeow(self, Random.value > 0.5f);
-				SlugNPCLastMeow[self] = Time.time;
+                PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
+				SlugNPCLastMeow[self] = Time.time + meowTimer;
+				// PushToMeowMain.PLogger.LogMessage($"Next meow will be: {Time.time + meowTimer}");
 			}
 		}
+
+
 	}
 }

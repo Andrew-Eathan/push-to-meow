@@ -1,4 +1,7 @@
 ﻿using BepInEx.Logging;
+using IL.JollyCoop;
+using JetBrains.Annotations;
+using System;
 using System.Timers;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -159,7 +162,17 @@ namespace PushToMeowMod
 
 				doReactionTimer.Elapsed += (object _, ElapsedEventArgs e) =>
 				{
-					sl.dialogBox.Interrupt(Translator.Translate(slReaction), 0);
+					var text = Translator.Translate(slReaction);
+
+                    if (JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber) == "Katzen")
+					{
+						if (text.StartsWith("Meow"))
+						{
+                            text = text.Substring("Meow".Length);
+                            text = "Porl" + text;
+                        }
+					}
+					sl.dialogBox.Interrupt(text, 0);
 					MeowSLCanRespondCounter = 0;
 				};
 			}
