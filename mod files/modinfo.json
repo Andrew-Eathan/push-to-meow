@@ -1,11 +1,11 @@
 {
 	"id": "pushtomeow",
 	"name": "Push To Meow",
-	"version": "1.2",
+	"version": "1.2.0",
 	"hide_version": true,
-	"authors": "mod idea & programmer: andreweathan // meow sound design, thumbnail & trailer: cioss // translation/slugpup ai programmer: vultumast",
+	"authors": "mod idea & programmer: andreweathan // meow sound design, thumbnail & trailer: cioss // slugpup ai \u0026 translation programming: vultumast",
 	"youtube_trailer_id": "r96vvPS-q_4",
-	"description": "slug cat go meow meow :3\nmeow button can be rebound in settings but its M by default\nyou can also select alternate sound for rivulet here (there's two versions)\nTranslation Credits:\n@NeiDrakos - Spanish (Spain)\n@Ray261_ - Portuguese (Brazil)\nJas3019 - Russian\n@thomasnet_mc - French (France)\n@daniela@lethallava.land - German",
+	"description": "slug cat go meow meow :3\nmeow button can be rebound in settings but its M by default\nyou can also select alternate sound for rivulet here (there's two versions)",
 	"requirements": [ "improved-input-config" ],
 	"requirements_names": [ "Improved Input Config" ],
 	"tags": [ "meow meow", "meow", "Cosmetics", "Game Mechanics" ]
