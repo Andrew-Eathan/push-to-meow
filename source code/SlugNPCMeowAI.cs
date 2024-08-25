@@ -44,6 +44,8 @@ namespace PushToMeowMod.Vanilla_Hooks
                 MeowUtils.ClearNPCMeowTime(self);
                 MeowUtils.HandleNPCSlugcat(self);
             }
+
+            Logger.LogInfo($"DMG: {self.stunDamageType.value}");
         }
 
         private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
