@@ -18,10 +18,14 @@ namespace PushToMeowMod
 		public readonly Configurable<bool> CanPanicMeow;
 		public readonly Configurable<bool> DoOraclesReact; // whether iterators react to meowing
 		public readonly Configurable<float> MeowVolumeMultiplier;
+
         public readonly Configurable<bool> SlugpupPanicMeow;
         public readonly Configurable<bool> SlugpupHungryMeow;
+		public readonly Configurable<bool> SlugpupAlertMeow;
+        public readonly Configurable<bool> SlugpupStunNoneMeow;
+        public readonly Configurable<bool> SlugpupStunBluntMeow;
 
-
+        // public readonly Configurable<string> test;
         public MeowMeowOptions(PushToMeowMain plugin)
 		{
 			AltRivuletSounds = config.Bind("PushToMeow_AlternateRivuletSound", false);
@@ -34,6 +38,16 @@ namespace PushToMeowMod
 
 			SlugpupPanicMeow = config.Bind("PushToMeow_SlugpupPanicMeow", true);
 			SlugpupHungryMeow = config.Bind("PushToMeow_SlugpupHungryMeow", true);
+            SlugpupAlertMeow = config.Bind("PushToMeow_SlugpupAlertMeow", true);
+            SlugpupStunNoneMeow = config.Bind("PushToMeow_SlugpupStunNoneMeow", true);
+            SlugpupStunBluntMeow = config.Bind("PushToMeow_SlugpupStunBluntMeow", true);
+
+			/* ConfigAcceptableList<string> acceptList = new ConfigAcceptableList<string>(new string[]
+            {
+                "AAAAA", "BBBBB", "CCCCC", "DDDDD"
+            });
+
+            test = config.Bind("PushToMeow_test", "AAAAA", acceptList); */
         }
 
 		public override void Initialize()
@@ -83,6 +97,7 @@ namespace PushToMeowMod
 			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
 			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
 
+			// OpComboBox comboBox = new OpComboBox(test, new Vector2(10, 570 - 400), 100);
 			volSlider.OnChange += () =>
 			{
 				volLabel.text = Translator.Translate("Meow Volume: ") + Mathf.Round(float.Parse(volSlider.value) * 100) + "%";
@@ -116,7 +131,13 @@ namespace PushToMeowMod
                 new OpLabel(45, 570 - 290 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
                 new OpCheckBox(SlugpupHungryMeow, 10, 570 - 320),
                 new OpLabel(45, 570 - 320 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
-			};
+                new OpCheckBox(SlugpupAlertMeow, 10, 570 - 350),
+                new OpLabel(45, 570 - 350 + 1, Translator.Translate("Do Slugpup meows alert creatures?"), false),
+                new OpCheckBox(SlugpupStunNoneMeow, 10, 570 - 380),
+                new OpLabel(45, 570 - 380 + 1, Translator.Translate("Do Slugpups meow in response to \"None\" type trauma?"), false),
+                new OpCheckBox(SlugpupStunBluntMeow, 10, 570 - 410),
+                new OpLabel(45, 570 - 410 + 1, Translator.Translate("Do Slugpups meow in response to \"Blunt\" type trauma?"), false),
+            };
 
             previewBtn.OnClick += (UIfocusable e) =>
             {
@@ -126,6 +147,7 @@ namespace PushToMeowMod
 
             meowTab.AddItems(opts);
 
+			// meowTab.AddItems(new UIelement[] { comboBox });
 
 			var vsp = new OpScrollBox(customMeowTab, 2000);
 			var btn = new OpSimpleButton(new Vector2(0, 0), new Vector2(70, 30), "Reload") { description = "Reloads custom meow configurations, useful if you're a mod developer making changes" };
@@ -176,12 +198,17 @@ namespace PushToMeowMod
 
 				j++;
 
-				customMeowList.Add(lbID);
+				//var previewLongButton = new OpSimpleButton(new Vector2(10, vpos - interval * 1), new Vector2(70, 24), "Preview Long");
+                //var previewShortButton = new OpSimpleButton(new Vector2(10, vpos - interval * 3), new Vector2(70, 24), "Preview Short");
+
+                customMeowList.Add(lbID);
 				customMeowList.Add(lbVol);
 				customMeowList.Add(lbNormal);
 				customMeowList.Add(lbPup);
 				customMeowList.Add(lbPath);
-			}
+                //customMeowList.Add(previewLongButton);
+                //customMeowList.Add(previewShortButton);
+            }
 
 			return (customMeowList, vSize);
 		}

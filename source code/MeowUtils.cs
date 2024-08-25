@@ -227,8 +227,9 @@ namespace PushToMeowMod
 				}
 				else
 				{
+#if DEBUG
 					Logger.LogDebug("Using normal meow type for " + slugcatID + " because they don't have a custom meow registered");
-
+#endif
 					if (isPup) // pup meow
 						meowType = isShortMeow ? SlugcatMeowPupShort : SlugcatMeowPup;
 					else // normal meow

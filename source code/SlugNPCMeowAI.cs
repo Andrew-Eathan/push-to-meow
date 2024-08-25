@@ -39,13 +39,14 @@ namespace PushToMeowMod.Vanilla_Hooks
             if (!self.isNPC || self.dead)
                 return;
 
-            if (self.stunDamageType.value == "Blunt")
+            switch (self.stunDamageType.value)
             {
-                MeowUtils.ClearNPCMeowTime(self);
-                MeowUtils.HandleNPCSlugcat(self);
+                case "Blunt":
+                case "None":
+                    MeowUtils.ClearNPCMeowTime(self);
+                    MeowUtils.HandleNPCSlugcat(self);
+                    break;
             }
-
-            Logger.LogInfo($"DMG: {self.stunDamageType.value}");
         }
 
         private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)

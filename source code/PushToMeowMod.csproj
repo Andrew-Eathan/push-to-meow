@@ -107,8 +107,9 @@
 cd "$(SolutionDir)"
 cd ..\
 
+XCOPY "$(ProjectDir)..\mod files\" %25rwdir%25 /y
 XCOPY "$(ProjectDir)..\mod files\" %25rwdir%25 /y/e/s/i/t
-XCOPY "$(OutputPath)" %25rwdir%25 /y/s/i/t
+XCOPY "$(OutputPath)" %25rwdir%25 /y/e/s/i/t
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
