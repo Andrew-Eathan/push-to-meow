@@ -21,4 +21,4 @@ mod for rain world that make slugcat go meow meow :))
 | Portuguese (Brazil)     | Ray261_    |
 | Jas3019                 | Russian    |
 | thomasnet_mc            | French     |
-| daniela@lethallava.land | German     |
+| German                  | daniela@lethallava.land |
