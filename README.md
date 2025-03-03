@@ -15,10 +15,10 @@ mod for rain world that make slugcat go meow meow :))
 | translation programming                  | Vultumast    |
 
 ## Translation Credits:<br>
-| Language                | Translator |
+| Translator                | Language |
 | ----------------------- | ---------- |
-| Spanish                 | NeiDrakos  |
-| Portuguese (Brazil)     | Ray261_    |
+| NeiDrakos                | Spanish  |
+| Ray261_     |  Portuguese (Brazil)   |
 | Jas3019                 | Russian    |
 | thomasnet_mc            | French     |
-| German                  | daniela@lethallava.land |
+| daniela@lethallava.land                  | German |
