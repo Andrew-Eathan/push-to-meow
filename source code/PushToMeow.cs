@@ -3,8 +3,8 @@ using BepInEx.Logging;
 using ImprovedInput;
 using Microsoft.Win32.SafeHandles;
 using MoreSlugcats;
-using Newtonsoft.Json.Linq;
 using PushToMeowMod.Vanilla_Hooks;
+using RainMeadowCompat;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,101 +31,106 @@ using UnityEngine;
 
 namespace PushToMeowMod
 {
-	[BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
-	public partial class PushToMeowMain : BaseUnityPlugin
-	{
-		public static ManualLogSource PLogger { get; internal set; } = null;
+    [BepInDependency(MeadowCompat.MEADOW_BEPINEX_ID, BepInDependency.DependencyFlags.SoftDependency)]
+
+    [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
+    public partial class PushToMeowMain : BaseUnityPlugin
+    {
+        public static ManualLogSource PLogger { get; internal set; } = null;
         public static RainWorld RainWorld { get; internal set; } = null;
 
-		public const string ROTUND_WORLD_IDENTIFER = "willowwisp.bellyplus";
+        public const string ROTUND_WORLD_IDENTIFER = "willowwisp.bellyplus";
 
-		public const string PLUGIN_GUID = "pushtomeow";
-		public const string PLUGIN_NAME = "Push to Meow";
+        public const string PLUGIN_GUID = "pushtomeow";
+        public const string PLUGIN_NAME = "Push to Meow";
         public const string PLUGIN_VERSION = "1.2.0";
-		public const float LongMeowTime = 0.14f; // seconds needed to hold so that long meow plays
-		public const float MeowCooldown = 0.24f; // seconds between meows
+        public const float LongMeowTime = 0.14f; // seconds needed to hold so that long meow plays
+        public const float MeowCooldown = 0.24f; // seconds between meows
 
-		public static PlayerKeybind Meow;
-		public static MeowMeowOptions ModSettings;
+        public static PlayerKeybind Meow;
+        public static MeowMeowOptions ModSettings;
 
-		// this stores the last checked state of the meow button for a given player
-		public Dictionary<int, bool> PlayersMeowButtonLastState = new Dictionary<int, bool>();
+        // this stores the last checked state of the meow button for a given player
+        public Dictionary<int, bool> PlayersMeowButtonLastState = new Dictionary<int, bool>();
 
-		// this stores the state of the player's meow being played, this gets reset once the button is let go
-		public Dictionary<int, MeowState> PlayersMeowingState = new Dictionary<int, MeowState>();
+        // this stores the state of the player's meow being played, this gets reset once the button is let go
+        public Dictionary<int, MeowState> PlayersMeowingState = new Dictionary<int, MeowState>();
 
-		// this stores the last time the meow button was pressed per player, used for cooldowns
-		public Dictionary<int, float> PlayersLastMeowTime = new Dictionary<int, float>();
+        // this stores the last time the meow button was pressed per player, used for cooldowns
+        public Dictionary<int, float> PlayersLastMeowTime = new Dictionary<int, float>();
 
-		// stores a quick lookup table for players used to access the player entity to handle meow button release
-		public Dictionary<int, Player> PlayersLookup = new Dictionary<int, Player>();
+        // stores a quick lookup table for players used to access the player entity to handle meow button release
+        public Dictionary<int, Player> PlayersLookup = new Dictionary<int, Player>();
 
-		public static bool RotundWorldSupportEnabled { get; private set; } = false;
+        public static bool RotundWorldSupportEnabled { get; private set; } = false;
 
-		private void OnEnable()
-		{
-			PLogger = Logger;
-			MeowUtils.PushToMeowPlugin = this;
-			MeowUtils.InitialiseSoundIDs(Logger);
+        private void OnEnable()
+        {
+            PLogger = Logger;
+            MeowUtils.PushToMeowPlugin = this;
+            MeowUtils.InitialiseSoundIDs(Logger);
 
-			// for good measure during hot reload
-			On.RainWorldGame.RestartGame += ResetPTMStateValues;
-			On.Player.Update += HandleMeowInput;
-			On.RainWorld.OnModsInit += RainWorld_OnModsInit;
+            // for good measure during hot reload
+            On.RainWorldGame.RestartGame += ResetPTMStateValues;
+            On.Player.Update += HandleMeowInput;
+            On.RainWorld.OnModsInit += RainWorld_OnModsInit;
 
-			if (Meow == null)
-				Meow = PlayerKeybind.Get("pushtomeow:meow");
+            if (Meow == null)
+                Meow = PlayerKeybind.Get("pushtomeow:meow");
 
-			if (Meow == null)
-				Meow = PlayerKeybind.Register("pushtomeow:meow", "Push to Meow", "Meow", KeyCode.M, KeyCode.JoystickButton3);
+            if (Meow == null)
+                Meow = PlayerKeybind.Register("pushtomeow:meow", "Push to Meow", "Meow", KeyCode.M, KeyCode.JoystickButton3);
 
             Logger.LogInfo("READY TO RRRRUMBL- i mean Meow Meow Meow Meow :3333"); // :3
-		}
+        }
 
         private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
-		{
+        {
             orig(self);
 
-			RainWorld = self;
-			
-		
+            RainWorld = self;
+
+
             Vanilla_Hooks.SlugNPCMeowAI.RainWorld = self;
 
             ModSettings = new MeowMeowOptions(this);
-			MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
-			Logger.LogInfo("Registered OI");
+            MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
+            Logger.LogInfo("Registered OI");
 
-			MeowUtils.LoadCustomMeows();
-			Logger.LogInfo("loaded custom meows :3");
+            MeowUtils.LoadCustomMeows();
+            Logger.LogInfo("loaded custom meows :3");
 
             Vanilla_Hooks.SlugNPCMeowAI.AttachHooks();
 
             SetDefaultTranslations();
 
             for (int i = 0; i < ModManager.ActiveMods.Count; i++)
-			{
-				if (ModManager.ActiveMods[i].id == ROTUND_WORLD_IDENTIFER)
-				{
-					RotundWorldSupportEnabled = true;
-					Logger.LogInfo("found rotund world, enabling support in PtM :)");
-				}
-			}
-		}
+            {
+                if (ModManager.ActiveMods[i].id == ROTUND_WORLD_IDENTIFER)
+                {
+                    RotundWorldSupportEnabled = true;
+                    Logger.LogInfo("found rotund world, enabling support in PtM :)");
+                }
+            }
+
+            try { MeadowCompat.InitCompatSetup(); }
+            catch (Exception ex) { Logger.LogError(ex); }
+        }
 
         private void SetDefaultTranslations()
-		{
+        {
             Logger.LogInfo("Adding Default Translations");
 
             SetSpanish();
-			SetFrench();
-			SetRussian();
-			SetPortuguese();
-			SetGerman();
+            SetFrench();
+            SetRussian();
+            SetPortuguese();
+            SetGerman();
 
-			return;
+            return;
 
-			void SetSpanish()
-			{
+            void SetSpanish()
+            {
                 var id = InGameTranslator.LanguageID.Spanish;
 
                 Translator.AddTranslation("...", id, "...");
@@ -245,179 +250,182 @@ namespace PushToMeowMod
         }
 
 
-		// to reset all state values of Push to Meow
-		private void ResetPTMStateValues(On.RainWorldGame.orig_RestartGame orig, RainWorldGame self)
-		{
+        // to reset all state values of Push to Meow
+        private void ResetPTMStateValues(On.RainWorldGame.orig_RestartGame orig, RainWorldGame self)
+        {
 #if DEBUG
-			Logger.LogInfo("game session restart so clearing all meow meow data :)");
+            Logger.LogInfo("game session restart so clearing all meow meow data :)");
 #endif
-			PlayersMeowButtonLastState?.Clear();
-			PlayersLastMeowTime?.Clear();
-			PlayersLookup?.Clear();
-			PlayersMeowingState?.Clear();
+            PlayersMeowButtonLastState?.Clear();
+            PlayersLastMeowTime?.Clear();
+            PlayersLookup?.Clear();
+            PlayersMeowingState?.Clear();
 
-			orig(self);
-		}
+            orig(self);
+        }
 
-		// if holding meow button for 0.14s, long meow plays
-		// if player lets go of meow button before 0.14s, short meow plays
-		public void Update()
-		{
-			foreach (KeyValuePair<int, bool> kv in PlayersMeowButtonLastState)
-			{
-				int playerIdx = kv.Key;
-				bool meowButtonState = kv.Value;
-				float timeSinceMeowPress = Time.time - PlayersLastMeowTime[playerIdx];
+        // if holding meow button for 0.14s, long meow plays
+        // if player lets go of meow button before 0.14s, short meow plays
+        public void Update()
+        {
+            foreach (KeyValuePair<int, bool> kv in PlayersMeowButtonLastState)
+            {
+                int playerIdx = kv.Key;
+                bool meowButtonState = kv.Value;
+                float timeSinceMeowPress = Time.time - PlayersLastMeowTime[playerIdx];
 
-				// if meow button is still pressed after time is over, then do a long meow 
-				if (
-					meowButtonState 
-					&& timeSinceMeowPress > LongMeowTime 
-					&& PlayersMeowingState[playerIdx] == MeowState.NotMeowed
-				)  {
-					DoMeow(PlayersLookup[playerIdx]);
-					PlayersMeowingState[playerIdx] = MeowState.MeowedLong;
+                // if meow button is still pressed after time is over, then do a long meow 
+                if (
+                    meowButtonState
+                    && timeSinceMeowPress > LongMeowTime
+                    && PlayersMeowingState[playerIdx] == MeowState.NotMeowed
+                )
+                {
+                    DoMeow(PlayersLookup[playerIdx]);
+                    PlayersMeowingState[playerIdx] = MeowState.MeowedLong;
 #if DEBUG
-					Logger.LogInfo("meow long " + playerIdx + " " + PlayersLookup[playerIdx] + " " + timeSinceMeowPress);
+                    Logger.LogInfo("meow long " + playerIdx + " " + PlayersLookup[playerIdx] + " " + timeSinceMeowPress);
 #endif
-				}
-			}
-		}
+                }
+            }
+        }
 
-		public void DoMeow(Player self, bool isShortMeow = false)
-		{
-			// mute ahh mf
-			if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear)
-			{
-				if (!ModSettings.SpearmasterMeow.Value)
-					return;
+        public static void DoMeow(Player self, bool isShortMeow = false)
+        {
+            if (MeadowCompat.MeadowEnabled) MeadowCompat.InvokeMeowRPC(self, isShortMeow);
 
-				MeowUtils.DoSpearmasterTailWiggle(self);
-			}
+            // mute ahh mf
+            if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear)
+            {
+                if (!ModSettings.SpearmasterMeow.Value)
+                    return;
 
-			if (!MeowUtils.CanMeow(self)) 
-				return;
+                MeowUtils.DoSpearmasterTailWiggle(self);
+            }
 
-			MeowUtils.HandleOracleReactions(self);
-			MeowUtils.DoMeowAnim(self, isShortMeow);
+            if (!MeowUtils.CanMeow(self))
+                return;
 
-			(SoundID meowType, float pitch, float volume) = MeowUtils.FindMeowSoundID(self, isShortMeow);
+            MeowUtils.HandleOracleReactions(self);
+            MeowUtils.DoMeowAnim(self, isShortMeow);
 
-			if (RotundWorldSupportEnabled)
-			{
-				// find base chunk weight of a slugcat's body chunk
-				float baseChunkWeight = (0.7f * self.slugcatStats.bodyWeightFac) / 2f;
+            (SoundID meowType, float pitch, float volume) = MeowUtils.FindMeowSoundID(self, isShortMeow);
 
-				// find the fattest body chunk's mass
-				float fattestChunkMass = 0;
-				foreach (var chunk in self.bodyChunks)
-					fattestChunkMass = Mathf.Max(fattestChunkMass, chunk.mass);
+            if (RotundWorldSupportEnabled)
+            {
+                // find base chunk weight of a slugcat's body chunk
+                float baseChunkWeight = (0.7f * self.slugcatStats.bodyWeightFac) / 2f;
 
-				float pitchChange = Mathf.Clamp((fattestChunkMass - baseChunkWeight) / 1.35f, 0, 0.55f);
+                // find the fattest body chunk's mass
+                float fattestChunkMass = 0;
+                foreach (var chunk in self.bodyChunks)
+                    fattestChunkMass = Mathf.Max(fattestChunkMass, chunk.mass);
+
+                float pitchChange = Mathf.Clamp((fattestChunkMass - baseChunkWeight) / 1.35f, 0, 0.55f);
 #if DEBUG
-				Logger.LogInfo("ROTUND WORLD COMPAT: lowered pitch to " + (pitch - pitchChange) + " from " + pitch);
+                PLogger.LogInfo("ROTUND WORLD COMPAT: lowered pitch to " + (pitch - pitchChange) + " from " + pitch);
 #endif
-				pitch -= pitchChange;
-			}
+                pitch -= pitchChange;
+            }
 
-			// play meow sound
-			try
-			{
-				self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
-			}
-			catch (Exception e)
-			{
-				Logger.LogError("Couldn't play meow type " + meowType + " for slugcat ID " + self.SlugCatClass.value + ", possible SoundID issues? Check your custom meow sound mod's modify/soundeffects/sounds.txt, make sure your .wav files have no underscores or other symbols!");
-				Logger.LogError(e);
-			}
+            // play meow sound
+            try
+            {
+                self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
+            }
+            catch (Exception e)
+            {
+                PLogger.LogError("Couldn't play meow type " + meowType + " for slugcat ID " + self.SlugCatClass.value + ", possible SoundID issues? Check your custom meow sound mod's modify/soundeffects/sounds.txt, make sure your .wav files have no underscores or other symbols!");
+                PLogger.LogError(e);
+            }
 
-			// alert all creatures around slugcat
-			if (ModSettings.AlertCreatures.Value)
-				self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
+            // alert all creatures around slugcat
+            if (ModSettings.AlertCreatures.Value)
+                self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
 
-			// drain slugcat's lungs a little (unless theyre rivulet)
-			if (ModSettings.DrainLungs.Value)
-				if (self.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Rivulet)
-					self.airInLungs -= 0.08f + (isShortMeow ? 0 : 0.08f);
+            // drain slugcat's lungs a little (unless theyre rivulet)
+            if (ModSettings.DrainLungs.Value)
+                if (self.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Rivulet)
+                    self.airInLungs -= 0.08f + (isShortMeow ? 0 : 0.08f);
 
-			// make little bubbles if submerged
-			if (self.submerged)
-				for (int i = 0; i < 2 + (isShortMeow ? 0 : 1); i++)
-				{
-					// for spearmaster, bubbles should come from tail
-					if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear) 
-					{
-						if (self.graphicsModule is PlayerGraphics gm)
-							self.room.AddObject(new Bubble(gm.tail[2].pos, gm.tail[2].vel, false, false));
-					}
-					else self.room.AddObject(new Bubble(self.firstChunk.pos, self.firstChunk.vel, false, false));
-				}
+            // make little bubbles if submerged
+            if (self.submerged)
+                for (int i = 0; i < 2 + (isShortMeow ? 0 : 1); i++)
+                {
+                    // for spearmaster, bubbles should come from tail
+                    if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear)
+                    {
+                        if (self.graphicsModule is PlayerGraphics gm)
+                            self.room.AddObject(new Bubble(gm.tail[2].pos, gm.tail[2].vel, false, false));
+                    }
+                    else self.room.AddObject(new Bubble(self.firstChunk.pos, self.firstChunk.vel, false, false));
+                }
 
 #if DEBUG
-			Logger.LogDebug("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
+            PLogger.LogDebug("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
 #endif
         }
 
         private void HandleMeowInput(On.Player.orig_Update orig, Player self, bool wtfIsThisBool)
-		{
-			orig(self, wtfIsThisBool);
+        {
+            orig(self, wtfIsThisBool);
 
-			if (self.isNPC)
-				return;
+            if (self.isNPC)
+                return;
 
-			try
-			{
-				int plyNumber = self.playerState.playerNumber;
-				bool plyPressingMeow = Meow.CheckRawPressed(plyNumber);
+            try
+            {
+                int plyNumber = self.playerState.playerNumber;
+                bool plyPressingMeow = Meow.CheckRawPressed(plyNumber);
 
-				if (!PlayersMeowButtonLastState.ContainsKey(plyNumber))
-					PlayersMeowButtonLastState.Add(plyNumber, false);
-				if (!PlayersLastMeowTime.ContainsKey(plyNumber))
-					PlayersLastMeowTime.Add(plyNumber, 0);
-				if (!PlayersMeowingState.ContainsKey(plyNumber))
-					PlayersMeowingState.Add(plyNumber, MeowState.NotMeowed);
-				if (!PlayersLookup.ContainsKey(plyNumber))
-					PlayersLookup.Add(plyNumber, self);
+                if (!PlayersMeowButtonLastState.ContainsKey(plyNumber))
+                    PlayersMeowButtonLastState.Add(plyNumber, false);
+                if (!PlayersLastMeowTime.ContainsKey(plyNumber))
+                    PlayersLastMeowTime.Add(plyNumber, 0);
+                if (!PlayersMeowingState.ContainsKey(plyNumber))
+                    PlayersMeowingState.Add(plyNumber, MeowState.NotMeowed);
+                if (!PlayersLookup.ContainsKey(plyNumber))
+                    PlayersLookup.Add(plyNumber, self);
 
-				PlayersLookup[plyNumber] = self; // always assign the player to avoid bugs that happen after respawning
+                PlayersLookup[plyNumber] = self; // always assign the player to avoid bugs that happen after respawning
 
-				// button press
-				if (plyPressingMeow && !PlayersMeowButtonLastState[plyNumber])
-				{
-					if (Time.time - PlayersLastMeowTime[plyNumber] < MeowCooldown) return;
+                // button press
+                if (plyPressingMeow && !PlayersMeowButtonLastState[plyNumber])
+                {
+                    if (Time.time - PlayersLastMeowTime[plyNumber] < MeowCooldown) return;
 
-					PlayersMeowButtonLastState[plyNumber] = true;
-					PlayersMeowingState[plyNumber] = MeowState.NotMeowed;
-					PlayersLastMeowTime[plyNumber] = Time.time; // to check later
+                    PlayersMeowButtonLastState[plyNumber] = true;
+                    PlayersMeowingState[plyNumber] = MeowState.NotMeowed;
+                    PlayersLastMeowTime[plyNumber] = Time.time; // to check later
 
-					//Debug.Log("btnpress " + plyNumber + " " + PlayersMeowButtonLastState.Count);
-				}
-				// button unpress
-				else if (!plyPressingMeow && PlayersMeowButtonLastState[plyNumber])
-				{
-					// short meow due to early release
-					if (Time.time - PlayersLastMeowTime[plyNumber] <= LongMeowTime && PlayersMeowingState[plyNumber] == MeowState.NotMeowed)
-					{
-						DoMeow(self, true);
-						PlayersMeowingState[plyNumber] = MeowState.MeowedShort;
+                    //Debug.Log("btnpress " + plyNumber + " " + PlayersMeowButtonLastState.Count);
+                }
+                // button unpress
+                else if (!plyPressingMeow && PlayersMeowButtonLastState[plyNumber])
+                {
+                    // short meow due to early release
+                    if (Time.time - PlayersLastMeowTime[plyNumber] <= LongMeowTime && PlayersMeowingState[plyNumber] == MeowState.NotMeowed)
+                    {
+                        DoMeow(self, true);
+                        PlayersMeowingState[plyNumber] = MeowState.MeowedShort;
 #if DEBUG
                         Logger.LogDebug("did short meow");
 #endif
-					}
+                    }
 
-					PlayersMeowButtonLastState[plyNumber] = false;
-					//Debug.Log("btnrel " + plyNumber + " " + PlayersMeowButtonLastState.Count);
-				}
-			}
-			catch (Exception e)
-			{
-				Logger.LogError("error when ticking meow update: " + e);
+                    PlayersMeowButtonLastState[plyNumber] = false;
+                    //Debug.Log("btnrel " + plyNumber + " " + PlayersMeowButtonLastState.Count);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("error when ticking meow update: " + e);
 #if DEBUG
-				Logger.LogDebug(e);
+                Logger.LogDebug(e);
 #endif
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 // just dropping this here in hopes of the mod working :)
