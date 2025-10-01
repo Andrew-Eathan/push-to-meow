@@ -7,6 +7,8 @@ mod for rain world that make slugcat go meow meow :))
   
 [(Workshop page)](https://steamcommunity.com/sharedfiles/filedetails/?id=3257541402)  
 
+To work on the project, setup an environment variable `RAINWORLD` to point to the root of the game files e.g. `D:\SteamLibrary\steamapps\common\Rain World`
+
 ## Mod Credits:
 | Role                                     | Person       |
 | ---------------------------------------- | ------------ |
