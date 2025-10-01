@@ -2,7 +2,7 @@
   "Title": "Push To Meow",
   "Description": "scream at your friends with this awesome new mod :3\r\n\r\nhold M long enough to do a long meow, or tap M quickly to do a short meow\r\n\r\nthis mod allows you to meow by the simple press of a button, featuring::::::::colon\r\n- different meowing sounds for rivulet, gourmand, artificer, and spearmaster (also inv too)\r\n- rebindable meow button thru control settings (works with controllers)\r\n- custom iterator messages to you meowing\r\n- meowing alerts other creatures (you can turn it off in settings!)\r\n- rotund world support\r\n- basic slugpup meow ai\r\n- now also supports custom meow sounds!\r\n\r\nwhat are you doing still reading the description??? Go Subscribe Now Subscribe Subscribe SubscribeSubscribeSubscribeSubscribeSubscribeSubscribeSubscribeSubscri\r\n\r\ncredtis;\r\n- meow sounds, thumbnail and trailer video by cioss\r\n- mod entirely programmed by me\r\n- slugpup meow ai \u0026 translation programming by vultumast\r\n- translators credited on the github page :)\r\n\r\nanyway heres the source code for those who wanna check it out:\r\nhttps://github.com/Andrew-Eathan/push-to-meow\r\n\r\nalso, if you\u0027re a custom slugcat mod developer who wants to add a custom meow sound for your slugcat (or replace existing sounds), here\u0027s a guide :)\r\nhttps://steamcommunity.com/sharedfiles/filedetails/?id=3261066431",
   "ID": "pushtomeow",
-  "Version": "1.2.0",
+  "Version": "1.2.1",
   "TargetGameVersion": "v1.9.06",
   "Requirements": "improved-input-config",
   "RequirementNames": "Improved Input Config",

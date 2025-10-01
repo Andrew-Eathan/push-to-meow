@@ -28,6 +28,7 @@ using UnityEngine;
 // 1.1 - add custom meow support for custom slugcats, small bugfixes n tweaks, meow volume slider in settings, massively clean up code
 // 1.1.1 - add saint meow, add slugpup meowing
 // 1.2.0 - add translations, add slugpup ai
+// 1.2.1 - better slugpup ai, more settings toggles, and pups+ support, all by vultumast
 
 namespace PushToMeowMod
 {
@@ -41,7 +42,7 @@ namespace PushToMeowMod
 
 		public const string PLUGIN_GUID = "pushtomeow";
 		public const string PLUGIN_NAME = "Push to Meow";
-        public const string PLUGIN_VERSION = "1.2.0";
+        public const string PLUGIN_VERSION = "1.2.1";
 		public const float LongMeowTime = 0.14f; // seconds needed to hold so that long meow plays
 		public const float MeowCooldown = 0.24f; // seconds between meows
 
