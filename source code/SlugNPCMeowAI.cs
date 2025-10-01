@@ -1,11 +1,13 @@
 ﻿using BepInEx.Logging;
 using IL.Menu.Remix.MixedUI;
+using ImprovedInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Rewired;
 
 namespace PushToMeowMod.Vanilla_Hooks
 {
@@ -39,7 +41,7 @@ namespace PushToMeowMod.Vanilla_Hooks
             if (!self.isNPC || self.dead)
                 return;
 
-            if (self.stunDamageType.value == "Blunt")
+            if (self.stunDamageType.value != string.Empty)
             {
                 MeowUtils.ClearNPCMeowTime(self);
                 MeowUtils.HandleNPCSlugcat(self);

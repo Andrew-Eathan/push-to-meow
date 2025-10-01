@@ -3,6 +3,7 @@ using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
 using RWCustom;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,20 +13,27 @@ namespace PushToMeowMod
 	public class MeowMeowOptions : OptionInterface
 	{
 		public readonly Configurable<bool> AltRivuletSounds;
-		public readonly Configurable<bool> AlertCreatures;
+        public readonly Configurable<bool> DoSpearmasterTailWiggleAnimation;
+
+        public readonly Configurable<bool> AlertCreatures;
 		public readonly Configurable<bool> SpearmasterMeow;
 		public readonly Configurable<bool> DrainLungs;
 		public readonly Configurable<bool> CanPanicMeow;
 		public readonly Configurable<bool> DoOraclesReact; // whether iterators react to meowing
 		public readonly Configurable<float> MeowVolumeMultiplier;
+
         public readonly Configurable<bool> SlugpupPanicMeow;
         public readonly Configurable<bool> SlugpupHungryMeow;
+		public readonly Configurable<bool> SlugpupAlertMeow;
+        public readonly Configurable<bool> SlugpupStunNoneMeow;
+        public readonly Configurable<bool> SlugpupStunBluntMeow;
 
-
+        // public readonly Configurable<string> test;
         public MeowMeowOptions(PushToMeowMain plugin)
 		{
 			AltRivuletSounds = config.Bind("PushToMeow_AlternateRivuletSound", false);
-			AlertCreatures = config.Bind("PushToMeow_AlertCreatures", true);
+            DoSpearmasterTailWiggleAnimation = config.Bind("PushToMeow_DoSpearmasterTailWiggleAnimation", true);
+            AlertCreatures = config.Bind("PushToMeow_AlertCreatures", true);
 			SpearmasterMeow = config.Bind("PushToMeow_SpearmasterMeow", true);
 			DrainLungs = config.Bind("PushToMeow_DrainLungs", true);
 			CanPanicMeow = config.Bind("PushToMeow_CanPanicMeow", true);
@@ -34,6 +42,16 @@ namespace PushToMeowMod
 
 			SlugpupPanicMeow = config.Bind("PushToMeow_SlugpupPanicMeow", true);
 			SlugpupHungryMeow = config.Bind("PushToMeow_SlugpupHungryMeow", true);
+            SlugpupAlertMeow = config.Bind("PushToMeow_SlugpupAlertMeow", true);
+            SlugpupStunNoneMeow = config.Bind("PushToMeow_SlugpupStunNoneMeow", true);
+            SlugpupStunBluntMeow = config.Bind("PushToMeow_SlugpupStunBluntMeow", true);
+
+			/* ConfigAcceptableList<string> acceptList = new ConfigAcceptableList<string>(new string[]
+            {
+                "AAAAA", "BBBBB", "CCCCC", "DDDDD"
+            });
+
+            test = config.Bind("PushToMeow_test", "AAAAA", acceptList); */
         }
 
 		public override void Initialize()
@@ -80,45 +98,59 @@ namespace PushToMeowMod
 				tab1Container.container.AddChild(lineSprite);
 			}*/
 
-			OpLabel volLabel = new OpLabel(10, 390 - 10 - 25, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
-			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 390 - 10 - 30), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
+			OpLabel volLabel = new OpLabel(10, 570 - 240 + 1, Translator.Translate("Meow Volume: ") + (Mathf.Round(MeowVolumeMultiplier.Value * 100) + "%"), false);
+			OpFloatSlider volSlider = new OpFloatSlider(MeowVolumeMultiplier, new Vector2(10 + 100 + 20, 570 - 240 + 1), 200) { description = "Changes the volume of all meows! 85% is the default :)" };
 
+			// OpComboBox comboBox = new OpComboBox(test, new Vector2(10, 570 - 400), 100);
 			volSlider.OnChange += () =>
 			{
 				volLabel.text = Translator.Translate("Meow Volume: ") + Mathf.Round(float.Parse(volSlider.value) * 100) + "%";
 			};
 
-			var previewBtn = new OpSimpleButton(new Vector2(meowTab.CanvasSize.x - 80, 570 - 31 + 1), new Vector2(70, 24), "Preview");
+			var previewBtn = new OpSimpleButton(new Vector2(meowTab.CanvasSize.x - 80, 570 - 30 + 1), new Vector2(70, 24), "Preview");
 
             UIelement[] opts = new UIelement[]
 			{
-				new OpLabel(new Vector2(10, 600 - 30), new Vector2(200, 30), Translator.Translate("Push to Meow settings :3 (check out tabs for custom meows)"), FLabelAlignment.Left, true) { verticalAlignment = OpLabel.LabelVAlignment.Top },
+				new OpLabel(new Vector2(10, 570), new Vector2(200, 30), Translator.Translate("Push to Meow settings :3 (check out tabs for custom meows)"), FLabelAlignment.Left, true) { verticalAlignment = OpLabel.LabelVAlignment.Top },
 				new OpCheckBox(AltRivuletSounds, 10, 570 - 30),
-				new OpLabel(45, 570 - 30 + 1, Translator.Translate("Use alternate sounds for Rivulet"), false),
+
+                new OpLabel(45, 570 - 30 + 1, Translator.Translate("Use alternate sounds for Rivulet"), false),
                 previewBtn,
-				new OpCheckBox(AlertCreatures, 10, 570 - 60),
-				new OpLabel(45, 570 - 60 + 1, Translator.Translate("Can meowing alert other creatures?"), false),
-				new OpCheckBox(SpearmasterMeow, 10, 570 - 90),
-				new OpLabel(45, 570 - 90 + 1, Translator.Translate("Can Spearmaster meow?"), false),
-				new OpCheckBox(DrainLungs, 10, 570 - 120),
-				new OpLabel(45, 570 - 120 + 1, Translator.Translate("Does meowing make you drown faster?"), false),
-				new OpCheckBox(CanPanicMeow, 10, 570 - 150),
-				new OpLabel(45, 570 - 150 + 1, Translator.Translate("Can slugcats panic-meow while being grabbed by lizards?"), false),
-				new OpCheckBox(DoOraclesReact, 10, 570 - 180),
-				new OpLabel(45, 570 - 180 + 1, Translator.Translate("Do iterators (Pebbles/Moon) react when you meow?"), false),
+
+                new OpCheckBox(DoSpearmasterTailWiggleAnimation, 10, 570 - 60),
+                new OpLabel(45, 570 - 60 + 1, Translator.Translate("Do the Spearmaster Tail Wiggle?"), false),
+
+
+				new OpCheckBox(AlertCreatures, 10, 570 - 90),
+				new OpLabel(45, 570 - 90 + 1, Translator.Translate("Can meowing alert other creatures?"), false),
+				new OpCheckBox(SpearmasterMeow, 10, 570 - 120),
+				new OpLabel(45, 570 - 120 + 1, Translator.Translate("Can Spearmaster meow?"), false),
+				new OpCheckBox(DrainLungs, 10, 570 - 150),
+				new OpLabel(45, 570 - 150 + 1, Translator.Translate("Does meowing make you drown faster?"), false),
+				new OpCheckBox(CanPanicMeow, 10, 570 - 180),
+				new OpLabel(45, 570 - 180 + 1, Translator.Translate("Can slugcats panic-meow while being grabbed by lizards?"), false),
+				new OpCheckBox(DoOraclesReact, 10, 570 - 210),
+				new OpLabel(45, 570 - 210 + 1, Translator.Translate("Do iterators (Pebbles/Moon) react when you meow?"), false),
 
                 volSlider,
                 volLabel,
 
-                new OpLabel(10, 570 - 251 + 1, Translator.Translate("Slugpups"), true),
+                new OpLabel(10, 570 - 280 + 1, Translator.Translate("Slugpups"), true),
 
-                new OpCheckBox(SlugpupPanicMeow, 10, 570 - 290),
-                new OpLabel(45, 570 - 290 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
-                new OpCheckBox(SlugpupHungryMeow, 10, 570 - 320),
-                new OpLabel(45, 570 - 320 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
-			};
+                new OpCheckBox(SlugpupPanicMeow, 10, 570 - 320),
+                new OpLabel(45, 570 - 320 + 1, Translator.Translate("Do Slugpups meow when they are in danger?"), false),
+                new OpCheckBox(SlugpupHungryMeow, 10, 570 - 350),
+                new OpLabel(45, 570 - 350 + 1, Translator.Translate("Do Slugpups meow when they are hungry?"), false),
+                new OpCheckBox(SlugpupAlertMeow, 10, 570 - 380),
+                new OpLabel(45, 570 - 380 + 1, Translator.Translate("Do Slugpup meows alert creatures?"), false),
+                new OpCheckBox(SlugpupStunNoneMeow, 10, 570 - 410),
+                new OpLabel(45, 570 - 410 + 1, Translator.Translate("Do Slugpups meow in response to \"None\" type trauma?"), false),
+                new OpCheckBox(SlugpupStunBluntMeow, 10, 570 - 440),
+                new OpLabel(45, 570 - 440 + 1, Translator.Translate("Do Slugpups meow in response to \"Blunt\" type trauma?"), false),
+            };
 
-            previewBtn.OnClick += (UIfocusable e) =>
+
+			previewBtn.OnClick += (UIfocusable e) =>
             {
 				// Vultu: This is probably a little cheeky but it works
 				e.PlaySound(((OpCheckBox)opts[1]).GetValueBool() ? MeowUtils.SlugcatMeowRivuletB : MeowUtils.SlugcatMeowRivuletA);
@@ -126,6 +158,7 @@ namespace PushToMeowMod
 
             meowTab.AddItems(opts);
 
+			// meowTab.AddItems(new UIelement[] { comboBox });
 
 			var vsp = new OpScrollBox(customMeowTab, 2000);
 			var btn = new OpSimpleButton(new Vector2(0, 0), new Vector2(70, 30), "Reload") { description = "Reloads custom meow configurations, useful if you're a mod developer making changes" };
@@ -176,12 +209,17 @@ namespace PushToMeowMod
 
 				j++;
 
-				customMeowList.Add(lbID);
+				//var previewLongButton = new OpSimpleButton(new Vector2(10, vpos - interval * 1), new Vector2(70, 24), "Preview Long");
+                //var previewShortButton = new OpSimpleButton(new Vector2(10, vpos - interval * 3), new Vector2(70, 24), "Preview Short");
+
+                customMeowList.Add(lbID);
 				customMeowList.Add(lbVol);
 				customMeowList.Add(lbNormal);
 				customMeowList.Add(lbPup);
 				customMeowList.Add(lbPath);
-			}
+                //customMeowList.Add(previewLongButton);
+                //customMeowList.Add(previewShortButton);
+            }
 
 			return (customMeowList, vSize);
 		}

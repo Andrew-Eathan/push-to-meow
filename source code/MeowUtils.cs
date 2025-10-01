@@ -113,9 +113,9 @@ namespace PushToMeowMod
 			List<string> list2 = new List<string>();
 			List<string> list3 = new List<string>();
 			list3.Add(Path.Combine(Custom.RootFolderDirectory(), "mergedmods"));
-			for (int i = 0; i < ModManager.InstalledMods.Count; i++)
+			for (int i = 0; i < ModManager.ActiveMods.Count; i++)
 			{
-				list3.Add(ModManager.InstalledMods[i].path);
+				list3.Add(ModManager.ActiveMods[i].path);
 			}
 
 			list3.Add(Custom.RootFolderDirectory());
@@ -227,8 +227,9 @@ namespace PushToMeowMod
 				}
 				else
 				{
+#if DEBUG
 					Logger.LogDebug("Using normal meow type for " + slugcatID + " because they don't have a custom meow registered");
-
+#endif
 					if (isPup) // pup meow
 						meowType = isShortMeow ? SlugcatMeowPupShort : SlugcatMeowPup;
 					else // normal meow

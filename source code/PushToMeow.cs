@@ -92,7 +92,7 @@ namespace PushToMeowMod
             Vanilla_Hooks.SlugNPCMeowAI.RainWorld = self;
 
             ModSettings = new MeowMeowOptions(this);
-			MachineConnector.SetRegisteredOI("pushtomeow", ModSettings);
+			MachineConnector.SetRegisteredOI(PLUGIN_GUID, ModSettings);
 			Logger.LogInfo("Registered OI");
 
 			MeowUtils.LoadCustomMeows();
@@ -320,21 +320,23 @@ namespace PushToMeowMod
 				pitch -= pitchChange;
 			}
 
-			// play meow sound
-			try
+			if (!self.isNPC || (self.isNPC && ModSettings.SlugpupAlertMeow.Value))
 			{
-				self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
-			}
-			catch (Exception e)
-			{
-				Logger.LogError("Couldn't play meow type " + meowType + " for slugcat ID " + self.SlugCatClass.value + ", possible SoundID issues? Check your custom meow sound mod's modify/soundeffects/sounds.txt, make sure your .wav files have no underscores or other symbols!");
-				Logger.LogError(e);
-			}
+				// play meow sound
+				try
+				{
+					self.room.PlaySound(meowType, self.bodyChunks[0], false, volume, pitch);
+				}
+				catch (Exception e)
+				{
+					Logger.LogError("Couldn't play meow type " + meowType + " for slugcat ID " + self.SlugCatClass.value + ", possible SoundID issues? Check your custom meow sound mod's modify/soundeffects/sounds.txt, make sure your .wav files have no underscores or other symbols!");
+					Logger.LogError(e);
+				}
 
-			// alert all creatures around slugcat
-			if (ModSettings.AlertCreatures.Value)
-				self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
-
+				// alert all creatures around slugcat
+				if (ModSettings.AlertCreatures.Value)
+					self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
+			}
 			// drain slugcat's lungs a little (unless theyre rivulet)
 			if (ModSettings.DrainLungs.Value)
 				if (self.SlugCatClass != MoreSlugcatsEnums.SlugcatStatsName.Rivulet)
@@ -352,10 +354,6 @@ namespace PushToMeowMod
 					}
 					else self.room.AddObject(new Bubble(self.firstChunk.pos, self.firstChunk.vel, false, false));
 				}
-
-#if DEBUG
-			Logger.LogDebug("play meow " + (isShortMeow ? "short" : "long") + " pitch " + pitch + " vol " + volume + "x ply " + self.SlugCatClass.value + " type " + meowType);
-#endif
         }
 
         private void HandleMeowInput(On.Player.orig_Update orig, Player self, bool wtfIsThisBool)
