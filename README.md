@@ -1,26 +1,29 @@
 # Push to Meow
-mod for rain world that make slugcat go meow meow :))  
+mod for rain world that make slugcat go meow meow :))
 ![thumbnail](https://github.com/Andrew-Eathan/push-to-meow/assets/42521608/1d2d68cc-7a2b-4a42-ab6f-0b84b3e501b0)
-  
-(it's my first rain world mod :sob: i know the code is terrible)  
-(also keep in mind the csproj contains absolute paths for library includes and build output paths)  
-  
-[(Workshop page)](https://steamcommunity.com/sharedfiles/filedetails/?id=3257541402)  
+
+~~(it's my first rain world mod :sob: i know the code is terrible)
+(also keep in mind the csproj contains absolute paths for library includes and build output paths)~~
+
+(hi misname here and im so sigma that i reworked this and it's now sigma organized :))
+
+[(Workshop page)](https://steamcommunity.com/sharedfiles/filedetails/?id=3257541402)
 
 To work on the project, setup an environment variable `RAINWORLD` to point to the root of the game files e.g. `D:\SteamLibrary\steamapps\common\Rain World`
 
 ## Mod Credits:
-| Role                                     | Person       |
-| ---------------------------------------- | ------------ |
-| mod idea, main programmer                | andreweathan |
-| meow sounds, thumbnail, yt trailer       | cioss        |
-| translation programming                  | Vultumast    |
+| Role                                     | Person                                       |
+| ---------------------------------------- | -------------------------------------------- |
+| mod idea, main programmer                | andreweathan                                 |
+| meow sounds, thumbnail, yt trailer       | cioss                                        |
+| translation programming                  | Vultumast                                    |
+| code cleanup, organization, watcher fix  | [misname](https://github.com/misleadingname) |
 
-## Translation Credits:<br>
-| Translator                | Language |
-| ----------------------- | ---------- |
-| NeiDrakos                | Spanish  |
-| Ray261_     |  Portuguese (Brazil)   |
-| Jas3019                 | Russian    |
-| thomasnet_mc            | French     |
-| daniela@lethallava.land                  | German |
+## Translation Credits:
+| Translator              | Language             |
+| ----------------------- | -------------------- |
+| NeiDrakos               | Spanish              |
+| Ray261_                 | Portuguese (Brazil)  |
+| Jas3019                 | Russian              |
+| thomasnet_mc            | French               |
+| daniela@lethallava.land | German               |

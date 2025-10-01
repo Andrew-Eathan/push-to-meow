@@ -98,10 +98,18 @@
         <Compile Include="MeowMeowOptions.cs"/>
         <Compile Include="MeowOracleReactions.cs"/>
         <Compile Include="MeowUtils.cs"/>
-        <Compile Include="PushToMeow.cs"/>
+        <Compile Include="PushToMeow.Core.cs" />
+        <Compile Include="PushToMeow.Input.cs" />
+        <Compile Include="PushToMeow.Meow.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Translator.cs"/>
         <Compile Include="SlugNPCMeowAI.cs"/>
+        <Compile Include="Localization\LocalizationSetup.cs"/>
+        <Compile Include="Localization\SpanishTranslations.cs"/>
+        <Compile Include="Localization\FrenchTranslations.cs"/>
+        <Compile Include="Localization\RussianTranslations.cs"/>
+        <Compile Include="Localization\PortugueseTranslations.cs"/>
+        <Compile Include="Localization\GermanTranslations.cs"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="packages.config"/>
