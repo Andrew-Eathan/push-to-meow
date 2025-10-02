@@ -22,6 +22,7 @@ using UnityEngine;
 // 1.1.1 - add saint meow, add slugpup meowing
 // 1.2.0 - add translations, add slugpup ai
 // 1.2.1 - better slugpup ai, more settings toggles, and pups+ support, all by vultumast
+// 1.2.2 - fix watcher 1.5 breaking ptm, refactor code - all by misname
 
 namespace PushToMeowMod
 {
@@ -32,7 +33,7 @@ namespace PushToMeowMod
 		public const string ROTUND_WORLD_IDENTIFER = "willowwisp.bellyplus";
 		public const string PLUGIN_GUID = "pushtomeow";
 		public const string PLUGIN_NAME = "Push to Meow";
-		public const string PLUGIN_VERSION = "1.2.1";
+		public const string PLUGIN_VERSION = "1.2.2";
 		
 		public const float LongMeowTime = 0.14f; // seconds needed to hold so that long meow plays
 		public const float MeowCooldown = 0.24f; // seconds between meows
