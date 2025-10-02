@@ -1,24 +1,15 @@
 ﻿using BepInEx.Logging;
-using IL.Menu.Remix.MixedUI;
-using ImprovedInput;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Rewired;
 
 namespace PushToMeowMod.Vanilla_Hooks
 {
-    public static class SlugNPCMeowAI
-    {
-        internal static RainWorld RainWorld = null;
-        internal static ManualLogSource Logger => PushToMeowMain.PLogger;
+	public static class SlugNPCMeowAI
+	{
+		internal static RainWorld RainWorld = null;
+		internal static ManualLogSource Logger => PushToMeowMain.PLogger;
 
-
-        //internal static Dictionary<Player, >
-        internal static bool AttachHooks()
+		internal static bool AttachHooks()
         {
             try
             {
@@ -31,81 +22,74 @@ namespace PushToMeowMod.Vanilla_Hooks
                 Logger.LogError($"Unable to attach {nameof(SlugNPCMeowAI)} hooks!! Exception details are as follows: \"{ex.Message}\"");
             }
 
-            return true;
-        }
+			return true;
+		}
 
-        private static void Player_Stun(On.Player.orig_Stun orig, Player self, int st)
-        {
-            orig(self, st);
+		private static void Player_Stun(On.Player.orig_Stun orig, Player self, int st)
+		{
+			orig(self, st);
 
-            if (!self.isNPC || self.dead)
-                return;
+			if (!self.isNPC || self.dead)
+				return;
 
-            if (self.stunDamageType.value != string.Empty)
-            {
-                MeowUtils.ClearNPCMeowTime(self);
-                MeowUtils.HandleNPCSlugcat(self);
-            }
-        }
+			if (self.stunDamageType.value != string.Empty)
+			{
+				MeowUtils.ClearNPCMeowTime(self);
+				MeowUtils.HandleNPCSlugcat(self);
+			}
+		}
 
-        private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
-        {
-            orig(self, eu);
+		private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
+		{
+			orig(self, eu);
 
-            if (!self.isNPC || self.dead)
-                return;
+			if (!self.isNPC || self.dead)
+				return;
 
-            if (PushToMeowMain.ModSettings.SlugpupPanicMeow.Value && self.dangerGrasp != null)
-            {
-                if (self.dangerGraspTime == 1)
-                    MeowUtils.ClearNPCMeowTime(self);
+			if (PushToMeowMain.ModSettings.SlugpupPanicMeow.Value && self.dangerGrasp != null)
+			{
+				if (self.dangerGraspTime == 1)
+					MeowUtils.ClearNPCMeowTime(self);
 
-                // Vultu: HELP!!!
+				// Panic meowing - frequency increases with time grabbed
+				var graspPercentage = (float)self.dangerGraspTime / 1000f;
+				float targetTime = Mathf.Lerp(0.75f, 3f, Math.Min(graspPercentage * UnityEngine.Random.Range(0.1f, 1.0f), 1.0f));
 
-                var graspPercentage = (float)self.dangerGraspTime / 1000f;
-                float targetTime = Mathf.Lerp(0.75f, 3f, Math.Min(graspPercentage * UnityEngine.Random.Range(0.1f, 1.0f), 1.0f));
+				MeowUtils.HandleNPCSlugcat(self, targetTime);
+				return;
+			}
+		}
 
+		internal static bool FreeHooks()
+		{
+			try
+			{
+				On.MoreSlugcats.SlugNPCAI.Update -= SlugNPCAI_Update;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError($"Unable to free {nameof(SlugNPCMeowAI)} hooks!! Exception details are as follows: \"{ex.Message}\"");
+			}
 
-                MeowUtils.HandleNPCSlugcat(self, targetTime);
-                return;
-            }
-        }
+			return true;
+		}
 
+		private static void SlugNPCAI_Update(On.MoreSlugcats.SlugNPCAI.orig_Update orig, MoreSlugcats.SlugNPCAI self)
+		{
+			orig(self);
 
-        internal static bool FreeHooks()
-        {
-            try
-            {
-                On.MoreSlugcats.SlugNPCAI.Update -= SlugNPCAI_Update;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError($"Unable to free {nameof(SlugNPCMeowAI)} hooks!! Exception details are as follows: \"{ex.Message}\"");
-            }
+			if (self.cat.dead || self.nap)
+				return;
 
-            return true;
-        }
-
-
-
-
-        private static void SlugNPCAI_Update(On.MoreSlugcats.SlugNPCAI.orig_Update orig, MoreSlugcats.SlugNPCAI self)
-        {
-            orig(self);
-
-            if (self.cat.dead || self.nap)
-                return;
-
-            if (PushToMeowMain.ModSettings.SlugpupHungryMeow.Value)
-            {
-                if (self.cat.slugcatStats.foodToHibernate > self.cat.CurrentFood)
-                {
-                    // Vultu: I am hungry and I am going to scream.
-                    float hungerPercentage = (float)self.cat.CurrentFood / (float)self.cat.slugcatStats.foodToHibernate;
-                    MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(15, 85, hungerPercentage) + UnityEngine.Random.value * 20);
-                }
-            }
-        }
-
-    }
+			if (PushToMeowMain.ModSettings.SlugpupHungryMeow.Value)
+			{
+				if (self.cat.slugcatStats.foodToHibernate > self.cat.CurrentFood)
+				{
+					// Hungry meowing - frequency increases with hunger
+					float hungerPercentage = (float)self.cat.CurrentFood / (float)self.cat.slugcatStats.foodToHibernate;
+					MeowUtils.HandleNPCSlugcat(self.cat, Mathf.Lerp(15, 85, hungerPercentage) + UnityEngine.Random.value * 20);
+				}
+			}
+		}
+	}
 }

@@ -1,6 +1,4 @@
 ﻿using BepInEx.Logging;
-using IL.JollyCoop;
-using JetBrains.Annotations;
 using System;
 using System.Timers;
 using UnityEngine;
@@ -10,7 +8,10 @@ namespace PushToMeowMod
 {
 	public static class MeowOracleReactions
 	{
-		public static readonly string[] _meowInterruptionsSLDislikes = // SL is looks to the moon
+		#region Dialogue Lines
+
+		// Looks to the Moon (SL) - Dislikes responses
+		public static readonly string[] _meowInterruptionsSLDislikes =
 		{
 			"...",
 			"Are you taunting me?",
@@ -44,22 +45,20 @@ namespace PushToMeowMod
 			"..."
 		};*/
 
+		// Five Pebbles (SS) - Dialogue lines
 		public static readonly string SSMeowAfterIsThisReachingYou = "...I assume from your meowing that you understand me now.";
 		public static readonly string SSMeowALotDuringHisDialogue1 = "...Can you stop with the yells? This information is relevant to you.";
-		public static readonly string SSMeowALotDuringHisDialogue2 = "Please quit that immediately."; // meowing again after 1
-		public static readonly string SSMeowALotDuringHisDialogue3 = "You had your chances. Leave now."; // meowing after 2, SS throws slugcat out afterwards
-		public static readonly string SSMeowReaction1 = "What is it?"; // meowing enough times
-		public static readonly string SSMeowReaction2 = "I have nothing for you. Please stop meowing."; // meowing enough times again
+		public static readonly string SSMeowALotDuringHisDialogue2 = "Please quit that immediately.";
+		public static readonly string SSMeowALotDuringHisDialogue3 = "You had your chances. Leave now.";
+		public static readonly string SSMeowReaction1 = "What is it?";
+		public static readonly string SSMeowReaction2 = "I have nothing for you. Please stop meowing.";
 		public static readonly string SSMeowReadingPearl1 = "Please quit meowing, I'm reading you your pearl.";
 		public static readonly string SSMeowReadingPearl2 = "If you keep going with this, I will not continue reading it.";
-		public static readonly string SSMeowReadingPearl3 = "..."; // he drops pearl
+		public static readonly string SSMeowReadingPearl3 = "...";
 
-		// these only play if SL is neutral or likes you
+		// Looks to the Moon (SL) - Neutral/Likes responses
 		public static readonly string SLMeow1 = "Yes? What's wrong?";
-		// for the next 4 meows she picks a random quote from the neutral/like quotes
-		// after those she says this
 		public static readonly string SLMeow2 = "Meow?";
-		// and repeats this every time after
 		public static readonly string[] SLMeow3 = {
 			"Meow.",
 			"Meow...?",
@@ -69,23 +68,24 @@ namespace PushToMeowMod
 			"Meow."
 		};
 
-		// this is set to true when you meow after SS asks you "is this reaching you"
-		public static bool MeowFlagSSReaching = false;
+		#endregion
 
-		// once counter reaches 5 this stage increments, counter is reset and an event happens
-		// stage 0 -> 1: SS says MeowALotDuringHisDialogue1
-		// stage 1 -> 2: SS says MeowALotDuringHisDialogue2
-		// stage 2 -> 3: SS says MeowALotDuringHisDialogue3 and throws you out
+		#region State Variables
+
+		// Five Pebbles state
+		public static bool MeowFlagSSReaching = false;
 		public static int MeowSSAngerStage = 0;
 		public static int MeowSSAngerStage1 = 0;
-		public static float MeowSSLastTimeBothered = 0; // SS only increments bother count 1.3 sec after last time
+		public static float MeowSSLastTimeBothered = 0;
+		public static int MeowSSCounter = 0;
 
-		// everytime this is incremented during a conversation a "..." interruption happens
-		public static int MeowSSCounter = 0; // pebble
-
-		// lines
-		public static int MeowSLCounter = 0; // moon
+		// Looks to the Moon state
+		public static int MeowSLCounter = 0;
 		public static int MeowSLCanRespondCounter = 0;
+
+		#endregion
+
+		#region Oracle Reaction Handling
 
 		public static void HandleThisOraclesReaction(Player self, Oracle oracle)
 		{
@@ -295,10 +295,7 @@ namespace PushToMeowMod
 				}
 			}
 		}
+
+		#endregion
 	}
 }
-
-/*
-							ss.conversation.paused = true;
-							ss.restartConversationAfterCurrentDialoge = true;
- */

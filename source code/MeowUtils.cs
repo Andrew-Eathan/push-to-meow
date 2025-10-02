@@ -3,18 +3,17 @@ using RWCustom;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Timers;
 using UnityEngine;
 using Newtonsoft.Json;
-using System.Timers;
-using Random = UnityEngine.Random;
-using System.Linq;
-using System.ComponentModel;
 using MoreSlugcats;
-using IL.JollyCoop;
-using IL.MoreSlugcats;
+using Random = UnityEngine.Random;
 
 namespace PushToMeowMod
 {
+	#region Enums and Data Structures
+
 	public enum MeowState
 	{
 		NotMeowed,
@@ -24,7 +23,6 @@ namespace PushToMeowMod
 
 	public struct CustomMeow
 	{
-		// named to match the json field names
 		public string SlugcatID;
 		public string FilePath;
 		public float VolumeMultiplier;
@@ -36,7 +34,6 @@ namespace PushToMeowMod
 
 	public class CustomMeowJson
 	{
-		// named to match the json field names
 		public string slugcat_id;
 		public float volume_multiplier = 1f;
 		public string short_meow_soundid;
@@ -52,8 +49,12 @@ namespace PushToMeowMod
 		public CustomMeowJson[] custom_meows;
 	}
 
+	#endregion
+
 	public static class MeowUtils
 	{
+		#region Sound IDs
+
 		public static SoundID SlugcatMeowNormal { get; internal set; }
 		public static SoundID SlugcatMeowNormalShort { get; internal set; }
 		public static SoundID SlugcatMeowPup { get; internal set; }
@@ -62,15 +63,20 @@ namespace PushToMeowMod
 		public static SoundID SlugcatMeowRivuletAShort { get; internal set; }
 		public static SoundID SlugcatMeowRivuletB { get; internal set; }
 		public static SoundID SlugcatMeowRivuletBShort { get; internal set; }
-
 		public static SoundID SlugcatMeowKatzenEasterEgg { get; internal set; }
 
+		#endregion
+
+		#region Static Fields
+
 		public static Dictionary<string, CustomMeow> CustomMeows = new Dictionary<string, CustomMeow>();
+		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
+		internal static PushToMeowMain PushToMeowPlugin = null;
 
-        internal static PushToMeowMain PushToMeowPlugin = null;
+		#endregion
 
-
-        public static void InitialiseSoundIDs(ManualLogSource logger)
+		#region Initialization
+		public static void InitialiseSoundIDs(ManualLogSource logger)
 		{
 			SlugcatMeowRivuletA = new SoundID("SlugcatMeowRivuletA", true);
 			SlugcatMeowRivuletB = new SoundID("SlugcatMeowRivuletB", true);
@@ -81,32 +87,39 @@ namespace PushToMeowMod
 			SlugcatMeowRivuletBShort = new SoundID("SlugcatMeowRivuletBShort", true);
 			SlugcatMeowNormalShort = new SoundID("SlugcatMeowNormalShort", true);
 			SlugcatMeowPupShort = new SoundID("SlugcatMeowPupShort", true);
-            SlugcatMeowKatzenEasterEgg = new SoundID("SlugcatMeowKatzenEasterEgg", true);
+			SlugcatMeowKatzenEasterEgg = new SoundID("SlugcatMeowKatzenEasterEgg", true);
 
-            logger.LogInfo("initialised default sound IDs!");
+			logger.LogInfo("initialised default sound IDs!");
 		}
+
+		#endregion
+
+		#region Oracle Reactions
 
 		public static void HandleOracleReactions(Player self)
 		{
-			foreach (List<PhysicalObject> objList in self.room.physicalObjects) // why is that an array of lists? :sob:
+			foreach (List<PhysicalObject> objList in self.room.physicalObjects)
 			{
 				foreach (PhysicalObject obj in objList)
 				{
-					if (obj is Oracle)
+					if (obj is Oracle oracle)
 					{
-						Oracle oracle = obj as Oracle;
 						MeowOracleReactions.HandleThisOraclesReaction(self, oracle);
 					}
 				}
 			}
 		}
 
+		#endregion
+
+		#region File System Utilities
+
 		// taken from https://github.com/MatheusVigaro/DressMySlugcat thank you DMS devs for this
 		public static string[] ListDirectory(string path, bool directories = false, bool includeAll = false)
 		{
 			if (Path.IsPathRooted(path))
 			{
-				return (directories ? Directory.GetDirectories(path) : Directory.GetFiles(path));
+				return directories ? Directory.GetDirectories(path) : Directory.GetFiles(path);
 			}
 
 			List<string> list = new List<string>();
@@ -146,11 +159,15 @@ namespace PushToMeowMod
 			return list.ToArray();
 		}
 
+		#endregion
+
+		#region Meow Validation and Animation
+
 		public static bool CanMeow(Player self)
 		{
 			bool isGrabbedByNonPlayer = self.grabbedBy.Count > 0 && !(self.grabbedBy[0].grabber is Player);
 
-			// ignore grab check if panic meowing isnt allowed
+			// ignore grab check if panic meowing isn't allowed
 			if (self.dead || (isGrabbedByNonPlayer && !PushToMeowMain.ModSettings.CanPanicMeow.Value))
 			{
 				PushToMeowMain.PLogger.LogInfo("dead so no meow >:( " + self + " " + self.Consious + " " + self.playerState.playerNumber);
@@ -182,11 +199,13 @@ namespace PushToMeowMod
 			}
 		}
 
+		#endregion
+
+		#region Sound Selection
+
 		public static (SoundID meowSoundID, float pitch, float volume) FindMeowSoundID(Player self, bool isShortMeow)
 		{
 			var Logger = PushToMeowMain.PLogger;
-
-
 
 			SoundID meowType;
 			bool isPup = self.playerState.isPup;
@@ -246,15 +265,17 @@ namespace PushToMeowMod
 			if (self.submerged)
 				pitch -= 0.1f + Random.value * 0.15f;
 
-			// Vultu: Katzen easter egg
-            var name = JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber);
+			// Katzen easter egg
+			var name = JollyCoop.JollyCustom.GetPlayerName(self.playerState.playerNumber);
 			if (name == "Katzen")
 				meowType = SlugcatMeowKatzenEasterEgg;
-            
-			
 
-            return (meowType, pitch, volume);
+			return (meowType, pitch, volume);
 		}
+
+		#endregion
+
+		#region Spearmaster Special Effects
 
 		public static void DoSpearmasterTailWiggle(Player self)
 		{
@@ -280,6 +301,10 @@ namespace PushToMeowMod
 
 			PushToMeowMain.PLogger.LogInfo("spear ma balz");
 		}
+
+		#endregion
+
+		#region Custom Meow Loading
 
 		public static void LoadCustomMeows()
 		{
@@ -361,15 +386,17 @@ namespace PushToMeowMod
 			}
 		}
 
-		public static Dictionary<Player, float> SlugNPCLastMeow = new Dictionary<Player, float>();
+		#endregion
+
+		#region NPC Meow Handling
 
 		public static void ClearNPCMeowTime(Player self)
 		{
-            if (!self.isNPC || !SlugNPCLastMeow.ContainsKey(self))
-                return;
+			if (!self.isNPC || !SlugNPCLastMeow.ContainsKey(self))
+				return;
 
 			SlugNPCLastMeow[self] = 0;
-        }
+		}
 
 		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
 		{
@@ -378,15 +405,14 @@ namespace PushToMeowMod
 
 			if (!SlugNPCLastMeow.ContainsKey(self))
 				SlugNPCLastMeow.Add(self, 0);
-			
+
 			if (Time.time - SlugNPCLastMeow[self] > 0.5)
 			{
-                PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
+				PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
 				SlugNPCLastMeow[self] = Time.time + meowTimer;
-				// PushToMeowMain.PLogger.LogMessage($"Next meow will be: {Time.time + meowTimer}");
 			}
 		}
 
-
+		#endregion
 	}
 }
