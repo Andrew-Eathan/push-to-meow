@@ -1,29 +1,28 @@
 # Push to Meow
-mod for rain world that make slugcat go meow meow :))
+mod for rain world that make slugcat go meow meow :))  
 ![thumbnail](https://github.com/Andrew-Eathan/push-to-meow/assets/42521608/1d2d68cc-7a2b-4a42-ab6f-0b84b3e501b0)
 
-~~(it's my first rain world mod :sob: i know the code is terrible)
-(also keep in mind the csproj contains absolute paths for library includes and build output paths)~~
-
-(hi misname here and im so sigma that i reworked this and it's now sigma organized :))
+(it's my first rain world mod :sob: i know the code is terrible)
 
 [(Workshop page)](https://steamcommunity.com/sharedfiles/filedetails/?id=3257541402)
 
-To work on the project, setup an environment variable `RAINWORLD` to point to the root of the game files e.g. `D:\SteamLibrary\steamapps\common\Rain World`
-
 ## Mod Credits:
-| Role                                     | Person                                       |
-| ---------------------------------------- | -------------------------------------------- |
-| mod idea, main programmer                | andreweathan                                 |
-| meow sounds, thumbnail, yt trailer       | cioss                                        |
-| translation programming                  | Vultumast                                    |
-| code cleanup, organization, watcher fix  | [misname](https://github.com/misleadingname) |
+| Role                               | Person                                           |
+|------------------------------------|--------------------------------------------------|
+| mod idea, main programmer          | [andreweathan](https://github.com/andrew-eathan) |
+| meow sounds, thumbnail, yt trailer | [cioss](https://steamcommunity.com/id/cioss21)   |
+| translation programming            | [Vultumast](https://github.com/vultumast)        |
+| code refactoring, watcher fix      | [misname](https://github.com/misleadingname)     |
 
 ## Translation Credits:
-| Translator              | Language             |
-| ----------------------- | -------------------- |
-| NeiDrakos               | Spanish              |
-| Ray261_                 | Portuguese (Brazil)  |
-| Jas3019                 | Russian              |
-| thomasnet_mc            | French               |
-| daniela@lethallava.land | German               |
+| Translator              | Language            |
+|-------------------------|---------------------|
+| NeiDrakos               | Spanish             |
+| Ray261_                 | Portuguese (Brazil) |
+| Jas3019                 | Russian             |
+| thomasnet_mc            | French              |
+| daniela@lethallava.land | German              |
+
+## Contributing
+To work on the project, setup an environment variable `RAINWORLD` to point to the root of the game files e.g. `D:\SteamLibrary\steamapps\common\Rain World`  
+if you don't do this, you WILL get like a bajillion errors when opening up the solution 💀

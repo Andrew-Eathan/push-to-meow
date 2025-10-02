@@ -98,9 +98,9 @@
         <Compile Include="MeowMeowOptions.cs"/>
         <Compile Include="MeowOracleReactions.cs"/>
         <Compile Include="MeowUtils.cs"/>
-        <Compile Include="PushToMeow.Core.cs" />
-        <Compile Include="PushToMeow.Input.cs" />
-        <Compile Include="PushToMeow.Meow.cs" />
+        <Compile Include="PushToMeow.Core.cs"/>
+        <Compile Include="PushToMeow.Input.cs"/>
+        <Compile Include="PushToMeow.Meow.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Translator.cs"/>
         <Compile Include="SlugNPCMeowAI.cs"/>
@@ -119,25 +119,13 @@
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <PropertyGroup>
-<!--        <PostBuildEvent>-->
-<!--            SET rwdir="%RAINWORLD%\RainWorld_Data\StreamingAssets\mods\pushtomeow"-->
-<!--            if not exist %rwdir% mkdir %rwdir%-->
-
-<!--            xcopy "$(ProjectDir)..\mod files\*" %rwdir% /e /y /i-->
-<!--            xcopy "$(TargetDir)*" %rwdir% /e /y /i-->
-<!--            xcopy "$(OutputPath)" %rwdir% /y /e /s /i /t-->
-<!--        </PostBuildEvent> &lt;!&ndash; better copy procedure &ndash;&gt;-->
         <PostBuildEvent>
-            SET rwdir="%RAINWORLD%\RainWorld_Data\StreamingAssets\mods\pushtomeow\"
+            SET rwdir="%RAINWORLD%\RainWorld_Data\StreamingAssets\mods\pushtomeow"
             if not exist %rwdir% mkdir %rwdir%
 
-            cd "$(SolutionDir)"
-            cd ..\
-
-            XCOPY "$(ProjectDir)..\mod files\" %25rwdir%25 /y
-            XCOPY "$(ProjectDir)..\mod files\" %25rwdir%25 /y/e/s/i/t
-            XCOPY "$(OutputPath)" %25rwdir%25 /y/e/s/i/t
+            xcopy "$(ProjectDir)..\mod files\*" %rwdir% /e /y /i
             xcopy "$(TargetDir)*" %rwdir% /e /y /i
-        </PostBuildEvent>
+            xcopy "$(OutputPath)" %rwdir% /y /e /s /i /t
+        </PostBuildEvent> <!-- better copy procedure -->
     </PropertyGroup>
 </Project>
