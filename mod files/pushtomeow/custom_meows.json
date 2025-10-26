@@ -13,6 +13,11 @@
 			"long_meow_soundid": "SlugcatMeowSaint"
 		},
 		{
+			"slugcat_id": "Watcher",
+			"short_meow_soundid": "SlugcatMeowWatcherShort",
+			"long_meow_soundid": "SlugcatMeowWatcher"
+		},
+		{
 			"slugcat_id": "Inv",
 			"short_meow_soundid": "SlugcatMeowSofanthielShort",
 			"long_meow_soundid": "SlugcatMeowSofanthiel"
