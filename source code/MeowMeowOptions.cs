@@ -85,7 +85,7 @@ namespace PushToMeowMod
 				new OpLabel(45, 570 - 60 + 1, Translator.Translate("Do the Spearmaster Tail Wiggle?"), false),
 
 				new OpCheckBox(AlertCreatures, 10, 570 - 90),
-				new OpLabel(45, 570 - 90 + 1, Translator.Translate("Can meowing alert other creatures?"), false),
+				new OpLabel(45, 570 - 90 + 1, Translator.Translate("Can meowing alert other creatures? (Disabling this also affects Slugpups)"), false),
 				new OpCheckBox(SpearmasterMeow, 10, 570 - 120),
 				new OpLabel(45, 570 - 120 + 1, Translator.Translate("Can Spearmaster meow?"), false),
 				new OpCheckBox(DrainLungs, 10, 570 - 150),

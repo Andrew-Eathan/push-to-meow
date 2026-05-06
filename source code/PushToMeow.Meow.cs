@@ -11,6 +11,7 @@ namespace PushToMeowMod
 			// Handle Spearmaster special case (mute character)
 			if (self.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear)
 			{
+				// meow disabled? exit
 				if (!ModSettings.SpearmasterMeow.Value)
 					return;
 
@@ -27,16 +28,10 @@ namespace PushToMeowMod
 
 			// Apply Rotund World pitch adjustment if enabled
 			if (RotundWorldSupportEnabled)
-			{
 				pitch = ApplyRotundWorldPitchAdjustment(self, pitch);
-			}
 
-			// Play meow sound (unless it's an NPC and alert meow is disabled)
-			if (!self.isNPC || (self.isNPC && ModSettings.SlugpupAlertMeow.Value))
-			{
-				PlayMeowSound(self, meowType, pitch, volume);
-				AlertCreaturesIfEnabled(self);
-			}
+			PlayMeowSound(self, meowType, pitch, volume);
+			AlertCreaturesIfEnabled(self);
 
 			// Drain lungs if enabled
 			DrainLungsIfEnabled(self, isShortMeow);
@@ -79,7 +74,8 @@ namespace PushToMeowMod
 
 		private void AlertCreaturesIfEnabled(Player self)
 		{
-			if (ModSettings.AlertCreatures.Value)
+			// Make noise but only if creature alerting is allowed for either players or NPCs
+			if ((!self.isNPC && ModSettings.AlertCreatures.Value) || (self.isNPC && ModSettings.SlugpupAlertMeow.Value && ModSettings.AlertCreatures.Value))
 				self.room.InGameNoise(new Noise.InGameNoise(self.bodyChunks[0].pos, 10000f, self, 2f));
 		}
 

@@ -397,8 +397,8 @@ namespace PushToMeowMod
 
 			SlugNPCLastMeow[self] = 0;
 		}
-
-		public static void HandleNPCSlugcat(Player self, float meowTimer = 0)
+		
+		public static void HandleNPCSlugcat(Player self, float cooldown = 0.5f)
 		{
 			if (!self.isNPC)
 				return;
@@ -409,7 +409,7 @@ namespace PushToMeowMod
 			if (Time.time - SlugNPCLastMeow[self] > 0.5)
 			{
 				PushToMeowPlugin.DoMeow(self, Random.value > 0.5f);
-				SlugNPCLastMeow[self] = Time.time + meowTimer;
+				SlugNPCLastMeow[self] = Time.time + cooldown;
 			}
 		}
 

@@ -32,11 +32,10 @@ namespace PushToMeowMod.Vanilla_Hooks
 			if (!self.isNPC || self.dead)
 				return;
 
-			if (self.stunDamageType.value != string.Empty)
-			{
-				MeowUtils.ClearNPCMeowTime(self);
-				MeowUtils.HandleNPCSlugcat(self);
-			}
+			if (self.stunDamageType.value == string.Empty) return;
+			
+			MeowUtils.ClearNPCMeowTime(self);
+			MeowUtils.HandleNPCSlugcat(self, 0.5f);
 		}
 
 		private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
